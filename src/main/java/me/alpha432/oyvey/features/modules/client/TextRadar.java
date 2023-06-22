@@ -63,7 +63,7 @@ public class TextRadar extends Module {
                     String str = " " + ChatFormatting.RESET;
 
                     if (OyVey.friendManager.isFriend(entity.getName())) {
-                        OyVey.textManager.drawString(str + ChatFormatting.AQUA + name + " " + distanceSB.toString() + ChatFormatting.WHITE, -2.0F, Y.getValue() + i * 10, this.color, true);
+                        OyVey.textManager.drawString(str + ChatFormatting.AQUA + name + " " + distanceSB.toString() + ChatFormatting.WHITE + "m", -2.0F, Y.getValue() + i * 10, this.color, true);
                     } else if ((ClickGui.getInstance()).rainbow.getValue() && ClickGui.getInstance().rainbowModeHud.getValue() == ClickGui.rainbowMode.Static) {
                         OyVey.textManager.drawString(str + name + " " + distanceSB.toString() + ChatFormatting.RESET + "m" + "", -2.0F, Y.getValue() + i * 10, ColorUtil.rainbow(((Integer) (ClickGui.getInstance()).rainbowHue.getValue()).intValue()).getRGB(), true);
                     } else {

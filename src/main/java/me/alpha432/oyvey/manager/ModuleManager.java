@@ -63,6 +63,7 @@ public class ModuleManager
         this.modules.add(new PayloadSpoof());
         this.modules.add(new EffectAlert());
         this.modules.add(new DurabilityAlert());
+        this.modules.add(new WhisperSpam());
         this.modules.add(new Coords());
         this.modules.add(new KeyXP());
         this.modules.add(new Killaura());

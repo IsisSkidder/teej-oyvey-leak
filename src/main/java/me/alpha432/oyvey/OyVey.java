@@ -77,7 +77,7 @@ public class OyVey {
         LOGGER.info("\n\nUnloading OyVey by Alpha432");
         if (unload) {
             reloadManager = new ReloadManager();
-            reloadManager.init(commandManager != null ? commandManager.getPrefix() : ".");
+            reloadManager.init(commandManager != null ? commandManager.getPrefix() : "-");
         }
         OyVey.onUnload();
         eventManager = null;
