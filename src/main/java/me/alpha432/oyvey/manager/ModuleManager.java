@@ -68,7 +68,6 @@ public class ModuleManager
         this.modules.add(new Killaura());
         this.modules.add(new Criticals());
         this.modules.add(new HoleFiller());
-        this.modules.add(new ActuallyGoodModuleList());
         this.modules.add(new AutoArmor());
         this.modules.add(new Step());
         this.modules.add(new FastPlace());
