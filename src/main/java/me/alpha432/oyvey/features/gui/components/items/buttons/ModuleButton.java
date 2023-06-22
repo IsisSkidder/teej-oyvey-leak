@@ -148,4 +148,3 @@ public class ModuleButton
         return this.module.isEnabled();
     }
 }
-

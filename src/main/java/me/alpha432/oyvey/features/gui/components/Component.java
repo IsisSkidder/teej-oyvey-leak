@@ -12,6 +12,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.init.SoundEvents;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Component
@@ -69,6 +70,9 @@ public class Component
                 item.drawScreen(mouseX, mouseY, partialTicks);
                 y += (float) item.getHeight() + 1.5f;
             }
+        }
+        if (ClickGui.getInstance().shader.getValue().booleanValue()) {
+            RenderUtil.drawColorShader(this.x, (int)((double)this.y - 1.5), this.x + this.width, this.y + this.height + (int)totalItemHeight, ColorUtil.toRGBA(new Color(ClickGui.getInstance().shaderRed.getValue(), ClickGui.getInstance().shaderGreen.getValue(), ClickGui.getInstance().shaderBlue.getValue(), ClickGui.getInstance().shaderAlpha.getValue())), ClickGui.getInstance().shaderRadius.getValue());
         }
     }
 
@@ -175,5 +179,15 @@ public class Component
         }
         return height;
     }
-}
+    public static float calculateRotation(float var0) {
+        if ((var0 %= 360.0F) >= 180.0F) {
+            var0 -= 360.0F;
+        }
 
+        if (var0 < -180.0F) {
+            var0 += 360.0F;
+        }
+
+        return var0;
+    }
+}

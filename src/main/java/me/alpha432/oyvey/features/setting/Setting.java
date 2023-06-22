@@ -7,6 +7,7 @@ import net.minecraftforge.common.MinecraftForge;
 import java.util.function.Predicate;
 
 public class Setting<T> {
+    public static boolean isOpen;
     private final String name;
     private final T defaultValue;
     private T value;
@@ -17,6 +18,7 @@ public class Setting<T> {
     private Predicate<T> visibility;
     private String description;
     private Feature feature;
+    public boolean open, parent, hideAlpha, hasBoolean, booleanValue;
 
     public Setting(String name, T defaultValue) {
         this.name = name;
@@ -86,6 +88,11 @@ public class Setting<T> {
         this.value = defaultValue;
         this.visibility = visibility;
         this.plannedValue = defaultValue;
+    }
+    public Setting<T> hideAlpha() {
+        hideAlpha = true;
+
+        return this;
     }
 
     public String getName() {
@@ -250,6 +257,9 @@ public class Setting<T> {
             return true;
         }
         return this.visibility.test(this.getValue());
+    }
+    public boolean isOpen() {
+        return (open && parent);
     }
 }
 

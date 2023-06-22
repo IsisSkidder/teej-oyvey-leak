@@ -314,6 +314,10 @@ public class EntityUtil
         }
         return placeTargets;
     }
+    public static boolean isBurrow(final Entity entity) {
+        final BlockPos blockPos = new BlockPos(entity.posX, entity.posY, entity.posZ);
+        return EntityUtil.mc.world.getBlockState(blockPos).getBlock().equals(Blocks.OBSIDIAN) || EntityUtil.mc.world.getBlockState(blockPos).getBlock().equals(Blocks.ENDER_CHEST);
+    }
 
     public static List<Vec3d> targets(Vec3d vec3d, boolean antiScaffold, boolean antiStep, boolean legs, boolean platform, boolean antiDrop, boolean raytrace) {
         ArrayList<Vec3d> placeTargets = new ArrayList<Vec3d>();

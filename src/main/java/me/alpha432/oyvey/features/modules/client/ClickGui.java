@@ -24,6 +24,12 @@ public class ClickGui
     public Setting<Integer> topGreen = this.register(new Setting<Integer>("SecondGreen", 0, 0, 255));
     public Setting<Integer> topBlue = this.register(new Setting<Integer>("SecondBlue", 150, 0, 255));
     public Setting<Integer> alpha = this.register(new Setting<Integer>("HoverAlpha", 240, 0, 255));
+    public Setting<Boolean> shader = this.register(new Setting<Boolean>("Shader", true));
+    public Setting<Integer> shaderRed = this.register(new Setting<Object>("ShaderRed", Integer.valueOf(0), Integer.valueOf(0), Integer.valueOf(255)));
+    public Setting<Integer> shaderGreen = this.register(new Setting<Object>("ShaderGreen", Integer.valueOf(0), Integer.valueOf(0), Integer.valueOf(255)));
+    public Setting<Integer> shaderBlue = this.register(new Setting<Object>("ShaderBlue", Integer.valueOf(255), Integer.valueOf(0), Integer.valueOf(255)));
+    public Setting<Integer> shaderAlpha = this.register(new Setting<Object>("ShaderAlpha", Integer.valueOf(255), Integer.valueOf(0), Integer.valueOf(255)));
+    public Setting<Integer> shaderRadius = this.register(new Setting<Object>("ShaderRadius", Integer.valueOf(2), Integer.valueOf(1), Integer.valueOf(10)));
     public Setting<Boolean> rainbow = this.register(new Setting<Boolean>("Rainbow", false));
     public Setting<rainbowMode> rainbowModeHud = this.register(new Setting<Object>("HRainbowMode", rainbowMode.Static, v -> this.rainbow.getValue()));
     public Setting<rainbowModeArray> rainbowModeA = this.register(new Setting<Object>("ARainbowMode", rainbowModeArray.Static, v -> this.rainbow.getValue()));
@@ -43,6 +49,10 @@ public class ClickGui
         }
         return INSTANCE;
     }
+    public static Colors INSTANCE() {
+        return null;
+    }
+
 
     private void setInstance() {
         INSTANCE = this;
@@ -96,4 +106,3 @@ public class ClickGui
 
     }
 }
-

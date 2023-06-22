@@ -13,7 +13,7 @@ public class PopCounter
     private static PopCounter INSTANCE = new PopCounter();
 
     public PopCounter() {
-        super("PopCounter", "Counts other players totem pops.", Module.Category.MISC, true, false, false);
+        super("HoleFiller", "Counts other players totem pops.", Module.Category.MISC, true, false, false);
         this.setInstance();
     }
 
@@ -38,9 +38,9 @@ public class PopCounter
             int l_Count = TotemPopContainer.get(player.getName());
             TotemPopContainer.remove(player.getName());
             if (l_Count == 1) {
-                Command.sendMessage(ChatFormatting.RED + player.getName() + " died after popping " + ChatFormatting.GREEN + l_Count + ChatFormatting.RED + " Totem!");
+                Command.sendMessage(ChatFormatting.WHITE + player.getName() + " died after popping " + ChatFormatting.GREEN + l_Count + ChatFormatting.RED + " Totem!");
             } else {
-                Command.sendMessage(ChatFormatting.RED + player.getName() + " died after popping " + ChatFormatting.GREEN + l_Count + ChatFormatting.RED + " Totems!");
+                Command.sendMessage(ChatFormatting.WHITE + player.getName() + " died after popping " + ChatFormatting.GREEN + l_Count + ChatFormatting.RED + " Totems!");
             }
         }
     }
@@ -60,10 +60,14 @@ public class PopCounter
             TotemPopContainer.put(player.getName(), l_Count);
         }
         if (l_Count == 1) {
-            Command.sendMessage(ChatFormatting.RED + player.getName() + " popped " + ChatFormatting.GREEN + l_Count + ChatFormatting.RED + " Totem.");
+            Command.sendMessage(ChatFormatting.WHITE + player.getName() + " popped " + ChatFormatting.GREEN + l_Count + ChatFormatting.RED + " Totem.");
         } else {
-            Command.sendMessage(ChatFormatting.RED + player.getName() + " popped " + ChatFormatting.GREEN + l_Count + ChatFormatting.RED + " Totems.");
+            Command.sendMessage(ChatFormatting.WHITE + player.getName() + " popped " + ChatFormatting.GREEN + l_Count + ChatFormatting.RED + " Totems.");
         }
+    }
+    @Override
+    public String getDisplayInfo() {
+        return "Smart";
     }
 }
 

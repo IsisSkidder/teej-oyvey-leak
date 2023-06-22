@@ -12,6 +12,7 @@ public class ColorManager {
     private float blue = 1.0f;
     private float alpha = 1.0f;
     private Color color = new Color(this.red, this.green, this.blue, this.alpha);
+    private static Color current = new Color(-1);
 
     public Color getColor() {
         return this.color;
@@ -70,10 +71,41 @@ public class ColorManager {
         this.blue = blue;
         this.updateColor();
     }
+    public static Color getCurrent() {
+        if (isRainbow()) {
+            return getRainbow();
+        }
+
+        return current;
+    }
+    public static boolean isRainbow() {
+        return ClickGui.getInstance().rainbow.getValue();
+    }
+    public static Color getRainbow() {
+        return ColorUtil.rainbow(ClickGui.getInstance().rainbowHue.getValue());
+    }
 
     public void setAlpha(float alpha) {
         this.alpha = alpha;
         this.updateColor();
+    }
+    public Color getColorWithAlphaColor(int alpha) {
+        if (ClickGui.getInstance().rainbow.getValue().booleanValue()) {
+            return ColorUtil.rainbow(Component.counter1[0] * ClickGui.getInstance().rainbowHue.getValue());
+        }
+        return new Color(this.red, this.green, this.blue, (float) alpha / 255.0f);
+    }
+    public int getCurrentGui(int alpha) {
+        if (isRainbow()) {
+            return ColorUtil.rainbow(me.alpha432.oyvey.features.gui.components.Component.counter1[0] * ClickGui.getInstance().rainbowHue.getValue()).getRGB();
+        }
+        return ColorUtil.toRGBA(ColorUtil.injectAlpha(current, alpha));
+    }
+    public int getCurrentWithAlpha(int alpha) {
+        if (isRainbow()) {
+            return ColorUtil.toRGBA(ColorUtil.injectAlpha(getRainbow(), alpha));
+        }
+        return ColorUtil.toRGBA(ColorUtil.injectAlpha(current, alpha));
     }
 }
 
