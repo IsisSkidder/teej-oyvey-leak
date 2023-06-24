@@ -44,6 +44,7 @@ public class ModuleManager
         this.modules.add(new HUD());
         this.modules.add(new HoleESP());
         this.modules.add(new FakePlayer());
+        this.modules.add(new HitMarkers());
         this.modules.add(new LiquidInteract());
         this.modules.add(new PearlNotify());
         this.modules.add(new ToolTips());
