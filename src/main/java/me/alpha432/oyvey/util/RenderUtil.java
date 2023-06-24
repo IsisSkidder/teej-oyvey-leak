@@ -185,6 +185,43 @@ public class RenderUtil
         GlStateManager.enableTexture2D();
         GlStateManager.popMatrix();
     }
+    static int gradientColor(int color, int percentage) {
+        int r = (((color & 0xFF0000) >> 16) * (100 + percentage) / 100);
+        int g = (((color & 0xFF00) >> 8) * (100 + percentage) / 100);
+        int b = ((color & 0xFF) * (100 + percentage) / 100);
+        return new Color(r, g, b).hashCode();
+    }
+     void drawGradientRect(float left, float top, float right, float bottom, int startColor, int endColor, boolean hovered) {
+        if (hovered) {
+            startColor = gradientColor(startColor, -20);
+            endColor = gradientColor(endColor, -20);
+        }
+        float c = (float) (startColor >> 24 & 255) / 255.0F;
+        float c1 = (float) (startColor >> 16 & 255) / 255.0F;
+        float c2 = (float) (startColor >> 8 & 255) / 255.0F;
+        float c3 = (float) (startColor & 255) / 255.0F;
+        float c4 = (float) (endColor >> 24 & 255) / 255.0F;
+        float c5 = (float) (endColor >> 16 & 255) / 255.0F;
+        float c6 = (float) (endColor >> 8 & 255) / 255.0F;
+        float c7 = (float) (endColor & 255) / 255.0F;
+        GlStateManager.disableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.shadeModel(7425);
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        bufferbuilder.pos(right, top, 0).color(c1, c2, c3, c).endVertex();
+        bufferbuilder.pos(left, top, 0).color(c1, c2, c3, c).endVertex();
+        bufferbuilder.pos(left, bottom, 0).color(c5, c6, c7, c4).endVertex();
+        bufferbuilder.pos(right, bottom, 0).color(c5, c6, c7, c4).endVertex();
+        tessellator.draw();
+        GlStateManager.shadeModel(7424);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
+    }
 
     public static void drawBox(BlockPos pos, Color color) {
         AxisAlignedBB bb = new AxisAlignedBB((double) pos.getX() - RenderUtil.mc.getRenderManager().viewerPosX, (double) pos.getY() - RenderUtil.mc.getRenderManager().viewerPosY, (double) pos.getZ() - RenderUtil.mc.getRenderManager().viewerPosZ, (double) (pos.getX() + 1) - RenderUtil.mc.getRenderManager().viewerPosX, (double) (pos.getY() + 1) - RenderUtil.mc.getRenderManager().viewerPosY, (double) (pos.getZ() + 1) - RenderUtil.mc.getRenderManager().viewerPosZ);

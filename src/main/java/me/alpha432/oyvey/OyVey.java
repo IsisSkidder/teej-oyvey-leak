@@ -61,6 +61,7 @@ public class OyVey {
         colorManager = new ColorManager();
         positionManager = new PositionManager();
         configManager = new ConfigManager();
+
         holeManager = new HoleManager();
         LOGGER.info("Managers loaded.");
         moduleManager.init();
@@ -120,7 +121,7 @@ public class OyVey {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        Display.setTitle("OyVey v0.0.3");
+        Display.setTitle("Minecraft 1.12.2");
         OyVey.load();
     }
 }

@@ -46,6 +46,7 @@ public class ModuleManager
         this.modules.add(new FakePlayer());
         this.modules.add(new LiquidInteract());
         this.modules.add(new PearlNotify());
+        this.modules.add(new Icon());
         this.modules.add(new ToolTips());
         this.modules.add(new Tracker());
         this.modules.add(new Burrow());
@@ -54,7 +55,6 @@ public class ModuleManager
         this.modules.add(new SmallShield());
         this.modules.add(new Surround());
         this.modules.add(new AutoTrap());
-        this.modules.add(new AutoWeb());
         this.modules.add(new BetterChat());
         this.modules.add(new ModifyCrystal());
         this.modules.add(new SwingAnimation());
@@ -67,10 +67,6 @@ public class ModuleManager
         this.modules.add(new Coords());
         this.modules.add(new KeyXP());
         this.modules.add(new Killaura());
-        this.modules.add(new Criticals());
-        this.modules.add(new HoleFiller());
-        this.modules.add(new AutoArmor());
-        this.modules.add(new Step());
         this.modules.add(new FastPlace());
         this.modules.add(new ESP());
         this.modules.add(new Selftrap());
