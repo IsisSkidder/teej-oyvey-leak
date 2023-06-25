@@ -23,7 +23,7 @@ public class GuiBlur extends Module {
         super("GuiBlur", "blur in gui", Category.CLIENT, true, false, false);
     }
 
-    public void onUpdate() {
+    public String onUpdate() {
         if (GuiBlur.mc.world != null) {
             if (!ClickGui.getInstance().isEnabled() && !(GuiBlur.mc.currentScreen instanceof GuiContainer) && !(GuiBlur.mc.currentScreen instanceof GuiChat) && !(GuiBlur.mc.currentScreen instanceof GuiConfirmOpenLink) && !(GuiBlur.mc.currentScreen instanceof GuiEditSign) && !(GuiBlur.mc.currentScreen instanceof GuiGameOver) && !(GuiBlur.mc.currentScreen instanceof GuiOptions) && !(GuiBlur.mc.currentScreen instanceof GuiIngameMenu) && !(GuiBlur.mc.currentScreen instanceof GuiVideoSettings) && !(GuiBlur.mc.currentScreen instanceof GuiScreenOptionsSounds) && !(GuiBlur.mc.currentScreen instanceof GuiControls) && !(GuiBlur.mc.currentScreen instanceof GuiCustomizeSkin) && !(GuiBlur.mc.currentScreen instanceof GuiModList) && !(GuiBlur.mc.currentScreen instanceof OyVeyGui)) {
                 if (GuiBlur.mc.entityRenderer.getShaderGroup() != null) {
@@ -43,5 +43,6 @@ public class GuiBlur extends Module {
                 GuiBlur.mc.entityRenderer.getShaderGroup().deleteShaderGroup();
             }
         }
+        return null;
     }
 }

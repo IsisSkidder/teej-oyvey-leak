@@ -55,7 +55,7 @@ public class Burrow extends Module
         this.oldSlot = Burrow.mc.player.inventory.currentItem;
     }
 
-    public void onUpdate() {
+    public String onUpdate() {
         switch ((Mode)this.mode.getValue()) {
             case OBBY: {
                 if (BurrowUtil.findHotbarBlock((Class)BlockObsidian.class) != -1) {
@@ -63,7 +63,7 @@ public class Burrow extends Module
                 }
                 Command.sendMessage("Unable to find Obsidian in your Hotbar! Disabling!");
                 this.disable();
-                return;
+                return null;
             }
             case ECHEST: {
                 if (BurrowUtil.findHotbarBlock((Class)BlockEnderChest.class) != -1) {
@@ -71,7 +71,7 @@ public class Burrow extends Module
                 }
                 Command.sendMessage("Unable to find EnderChests in your Hotbar! Disabling!");
                 this.disable();
-                return;
+                return null;
             }
             case EABypass: {
                 if (BurrowUtil.findHotbarBlock((Class)BlockChest.class) != -1) {
@@ -79,7 +79,7 @@ public class Burrow extends Module
                 }
                 Command.sendMessage("Unable to find Chests in your Hotbar! Disabling!");
                 this.disable();
-                return;
+                return null;
             }
         }
         BurrowUtil.switchToSlot((this.mode.getValue() == Mode.OBBY) ? BurrowUtil.findHotbarBlock((Class)BlockObsidian.class) : ((this.mode.getValue() == Mode.ECHEST) ? BurrowUtil.findHotbarBlock((Class)BlockEnderChest.class) : BurrowUtil.findHotbarBlock((Class)BlockChest.class)));
@@ -93,6 +93,7 @@ public class Burrow extends Module
         Burrow.mc.player.setSneaking(false);
         BurrowUtil.switchToSlot(this.oldSlot);
         this.toggle();
+        return null;
     }
 
     private boolean intersectsWithEntity(final BlockPos pos) {
