@@ -10,7 +10,7 @@ public class UnfocusedCPU extends Module {
     public Setting<Integer> unfocusedFps = this.register(new Setting<>("UnfocusedFPS", 5, 1, 30));
 
     public UnfocusedCPU() {
-        super("Unfocused CPU", "Decreases your framerate when minecraft is unfocused.", Category.MISC, false , false, false);
+        super("UnfocusedCPU", "Decreases your framerate when minecraft is unfocused.", Category.MISC, false , false, false);
         INSTANCE = this;
     }
 }

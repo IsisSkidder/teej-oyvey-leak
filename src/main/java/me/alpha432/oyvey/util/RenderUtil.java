@@ -69,6 +69,9 @@ public class RenderUtil
     public static boolean isInViewFrustrum(Entity entity) {
         return RenderUtil.isInViewFrustrum(entity.getEntityBoundingBox()) || entity.ignoreFrustumCheck;
     }
+    public static boolean nullCheck() {
+        return Util.mc.player == null || Util.mc.world == null || Util.mc.playerController == null;
+    }
 
     public static boolean isInViewFrustrum(AxisAlignedBB bb) {
         Entity current = Minecraft.getMinecraft().getRenderViewEntity();

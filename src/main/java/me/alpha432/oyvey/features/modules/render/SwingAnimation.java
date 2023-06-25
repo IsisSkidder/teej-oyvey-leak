@@ -18,7 +18,7 @@ public class SwingAnimation extends Module {
     public static Setting<Integer> swingDelay;
 
     public SwingAnimation() {
-        super("Swing Modify", "Allows you to change animations in your hand", Module.Category.RENDER, true, false, false);
+        super("SwingModify", "Allows you to change animations in your hand", Module.Category.RENDER, true, false, false);
         AnimationsVersion = this.register(new Setting<AnimationVersion>("Version", AnimationVersion.OneDotEight));
         playersDisableAnimations = this.register(new Setting<Boolean>("Disable Animations", false));
         changeMainhand = this.register(new Setting<Boolean>("Change Mainhand", true));

@@ -232,7 +232,7 @@ public class Unicode extends Module {
 
 
     public Unicode() {
-        super("Anti Unicode", "Lags out peoples games with Unicode text", Category.MISC, true, false, false);
+        super("AntiUnicode", "Lags out peoples games with Unicode text", Category.MISC, true, false, false);
         this.setInstance();
     }
 

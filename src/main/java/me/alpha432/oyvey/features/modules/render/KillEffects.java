@@ -38,7 +38,7 @@ public class KillEffects
     final Object sync = new Object();
 
     public KillEffects() {
-        super("Death Effects", "When you kill something it spawns shit.", Module.Category.RENDER, true, false, false);
+        super("DeathEffects", "When you kill something it spawns shit.", Module.Category.RENDER, true, false, false);
     }
 
     @Override
