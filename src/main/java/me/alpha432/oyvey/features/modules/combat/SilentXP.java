@@ -29,9 +29,8 @@ public class SilentXP extends Module
     }
 
     @Override
-    public void onUpdate() {
+    public String onUpdate() {
         if (fullNullCheck()) {
-            return;
         }
         switch (this.mode.getValue()) {
             case PRESS: {
@@ -50,7 +49,6 @@ public class SilentXP extends Module
             }
             default: {
                 if (this.groundOnly.getValue() && SilentXP.mc.player.rotationPitch < 0.0f) {
-                    return;
                 }
                 if (Mouse.isButtonDown(2)) {
                     this.throwXP(true);
@@ -59,6 +57,7 @@ public class SilentXP extends Module
                 break;
             }
         }
+        return null;
     }
 
     private boolean toggled() {

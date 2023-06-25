@@ -16,7 +16,7 @@ public class TextRadar extends Module {
     public Setting<Integer> Y = register(new Setting<>("Y", 5, 0, 550));
 
     public TextRadar() {
-        super("TextRadar", "Shows players in render distance on hud", Category.CLIENT, false, false, false);
+        super("TextRadar", "Shows players in render distance on hud", Category.CLIENT,false ,false ,false);
     }
 
     public static TextRadar INSTANCE = new TextRadar();
@@ -38,9 +38,9 @@ public class TextRadar extends Module {
                 color = ColorUtil.toRGBA(ClickGui.getInstance().red.getValue(), ClickGui.getInstance().green.getValue(), ClickGui.getInstance().blue.getValue());
 
 
-                String heal = "";
+                String heal;
                 String health_str;
-                health_str = health + "";
+                health_str = "" + "";
                 health_str = health_str.replace("", "");
 
 
@@ -58,18 +58,23 @@ public class TextRadar extends Module {
                 distanceSB.append(distance);
 
                 if (health >= 12.0) {
+                    heal = "" + ChatFormatting.GREEN + health_str + "";
+                } else if (health >= 4.0) {
+                    heal = "" + ChatFormatting.YELLOW + health_str + "";
+                } else {
+                    heal = "" + ChatFormatting.RED + health_str + "";
+                }
 
 
-                    String name = entity.getGameProfile().getName();
-                    String str = heal + " " + ChatFormatting.RESET;
+                String name = entity.getGameProfile().getName();
+                String str = heal + " " + ChatFormatting.RESET;
 
-                    if (OyVey.friendManager.isFriend(entity.getName())) {
-                        OyVey.textManager.drawString(str + ChatFormatting.AQUA + name + " " + distanceSB.toString() + "m", -2.0F, Y.getValue() + i * 10, this.color, true);
-                    } else if ((ClickGui.getInstance()).rainbow.getValue() && ClickGui.getInstance().rainbowModeHud.getValue() == ClickGui.rainbowMode.Static) {
-                        OyVey.textManager.drawString(str + name + " " + distanceSB.toString() + ChatFormatting.WHITE + " ", -2.0F, Y.getValue() + i * 10, ColorUtil.rainbow(((Integer) (ClickGui.getInstance()).rainbowHue.getValue()).intValue()).getRGB(), true);
-                    } else {
-                        OyVey.textManager.drawString(str + name + " " + distanceSB.toString() + "m", -2.0F, Y.getValue() + i * 10, this.color, true);
-                    }
+                if (OyVey.friendManager.isFriend(entity.getName())) {
+                    OyVey.textManager.drawString(str + ChatFormatting.AQUA + name + distanceSB.toString() + "m", -2.0F, Y.getValue() + i * 10, this.color, true);
+                } else if ((ClickGui.getInstance()).rainbow.getValue() && ClickGui.getInstance().rainbowModeHud.getValue() == ClickGui.rainbowMode.Static) {
+                    OyVey.textManager.drawString(str + name + " " + distanceSB.toString() + "m", -2.0F, Y.getValue() + i * 10, ColorUtil.rainbow(((Integer) (ClickGui.getInstance()).rainbowHue.getValue()).intValue()).getRGB(), true);
+                } else {
+                    OyVey.textManager.drawString(str + name + " " + distanceSB.toString() + "m"  + " ", -2.0F, Y.getValue() + i * 10, this.color, true);
                 }
             }
         }

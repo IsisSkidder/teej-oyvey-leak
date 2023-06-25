@@ -38,7 +38,6 @@ public class ModuleManager
     public void init() {
         this.modules.add(new ClickGui());
         this.modules.add(new FontMod());
-        this.modules.add(new IdWatermark());
         this.modules.add(new KillEffects());
         this.modules.add(new TextRadar());
         this.modules.add(new HUD());
@@ -60,12 +59,10 @@ public class ModuleManager
         this.modules.add(new SwingAnimation());
         this.modules.add(new Clip());
         this.modules.add(new Unicode());
-        this.modules.add(new PayloadSpoof());
         this.modules.add(new EffectAlert());
         this.modules.add(new DurabilityAlert());
         this.modules.add(new WhisperSpam());
         this.modules.add(new Coords());
-        this.modules.add(new KeyXP());
         this.modules.add(new Killaura());
         this.modules.add(new FastPlace());
         this.modules.add(new ESP());
