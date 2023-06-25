@@ -60,6 +60,7 @@ public class ModuleManager
         this.modules.add(new Surround());
         this.modules.add(new AutoTrap());
         this.modules.add(new BetterChat());
+        this.modules.add(new VisualRange());
         this.modules.add(new ModifyCrystal());
         this.modules.add(new SwingAnimation());
         this.modules.add(new Clip());
