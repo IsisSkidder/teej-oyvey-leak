@@ -20,7 +20,7 @@ public class DurabilityAlert extends Module
     }
 
     @Override
-    public void onUpdate() {
+    public String onUpdate() {
         this.lowDura = false;
         try {
             for (final ItemStack is : DurabilityAlert.mc.player.getArmorInventoryList()) {
@@ -34,6 +34,7 @@ public class DurabilityAlert extends Module
             }
         }
         catch (Exception ex) {}
+        return null;
     }
 
     @Override

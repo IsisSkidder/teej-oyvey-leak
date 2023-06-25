@@ -39,6 +39,10 @@ public class ModuleManager
         this.modules.add(new ClickGui());
         this.modules.add(new FontMod());
         this.modules.add(new IdWatermark());
+        this.modules.add(new Media());
+        this.modules.add(new NoHitBox());
+        this.modules.add(new CornerClip());
+        this.modules.add(new PearlBait());
         this.modules.add(new KillEffects());
         this.modules.add(new TextRadar());
         this.modules.add(new HUD());

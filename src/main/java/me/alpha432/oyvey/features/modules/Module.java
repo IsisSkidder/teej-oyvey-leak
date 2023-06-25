@@ -65,7 +65,8 @@ public class Module
     public void onLogout() {
     }
 
-    public void onUpdate() {
+    public String onUpdate() {
+        return null;
     }
 
     public void onRender2D(Render2DEvent event) {

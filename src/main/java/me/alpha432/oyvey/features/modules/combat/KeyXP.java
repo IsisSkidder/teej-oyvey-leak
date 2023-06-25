@@ -26,7 +26,7 @@ public class KeyXP
     }
 
     @Override
-    public void onUpdate() {
+    public String onUpdate() {
         if (KeyXP.fullNullCheck())
         switch (this.mode.getValue()) {
             case PRESS:
@@ -43,6 +43,7 @@ public class KeyXP
                 if (Mouse.isButtonDown(2))
                     this.throwXP(true);
         }
+        return null;
     }
 
     private boolean toggled() {

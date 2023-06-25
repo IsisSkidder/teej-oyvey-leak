@@ -20,7 +20,7 @@ public class StrengthDetect extends Module {
     }
 
     @Override
-    public void onUpdate() {
+    public String onUpdate() {
         for (EntityPlayer player : mc.world.playerEntities) {
             if (player.equals(mc.player)) continue;
             if (player.isPotionActive(MobEffects.STRENGTH) && !this.str.contains(player)) {
@@ -32,5 +32,6 @@ public class StrengthDetect extends Module {
             Command.sendMessage(player.getDisplayNameString() + " doesnt have strength anymore");
             this.str.remove(player);
         }
+        return null;
     }
 }

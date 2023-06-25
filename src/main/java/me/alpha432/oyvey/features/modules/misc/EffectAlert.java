@@ -19,7 +19,7 @@ public class EffectAlert
     }
 
     @Override
-    public void onUpdate() {
+    public String onUpdate() {
         if (this.weakness.getValue().booleanValue()) {
             if (EffectAlert.mc.player.isPotionActive(MobEffects.WEAKNESS) && !this.hasAnnouncedWeakness) {
                 Command.sendMessage("You now have " + (Object)ChatFormatting.DARK_GRAY + (Object)ChatFormatting.BOLD + "Weakness" + (Object)ChatFormatting.RESET + "!");
@@ -50,5 +50,6 @@ public class EffectAlert
                 this.hasAnnouncedSwiftness = false;
             }
         }
+        return null;
     }
 }
