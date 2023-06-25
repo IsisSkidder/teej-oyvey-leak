@@ -38,6 +38,7 @@ public class ModuleManager
     public void init() {
         this.modules.add(new ClickGui());
         this.modules.add(new FontMod());
+        this.modules.add(new MCP());
         this.modules.add(new IdWatermark());
         this.modules.add(new Media());
         this.modules.add(new NoHitBox());
