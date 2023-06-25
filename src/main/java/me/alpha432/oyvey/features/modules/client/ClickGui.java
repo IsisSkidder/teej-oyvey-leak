@@ -15,6 +15,7 @@ public class ClickGui
     private static ClickGui INSTANCE = new ClickGui();
     public Setting<String> prefix = this.register(new Setting<String>("Prefix", "."));
     public Setting<Boolean> customFov = this.register(new Setting<Boolean>("CustomFov", false));
+    public Setting<Boolean> descriptions = this.register(new Setting<Boolean>("Descriptions", true));
     public Setting<Boolean> snowing = this.register(new Setting<Boolean>("Snowing", true));
     public Setting<Float> fov = this.register(new Setting<Float>("Fov", Float.valueOf(150.0f), Float.valueOf(-180.0f), Float.valueOf(180.0f)));
     public Setting<Integer> red = this.register(new Setting<Integer>("Red", 0, 0, 255));

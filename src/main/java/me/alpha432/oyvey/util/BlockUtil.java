@@ -404,4 +404,3 @@ public class BlockUtil
         return BlockUtil.rayTracePlaceCheck(pos, true);
     }
 }
-

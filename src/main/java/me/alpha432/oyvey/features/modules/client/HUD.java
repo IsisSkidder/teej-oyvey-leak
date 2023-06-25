@@ -51,7 +51,7 @@ public class HUD extends Module {
     Setting<Boolean> pvpInfo = register(new Setting("PvpInfo", false));
     public Setting<Boolean> rainbowPrefix = this.register(new Setting<Boolean>("RainbowPrefix", false));
     public Setting<Integer> rainbowSpeed = this.register(new Setting<Object>("PrefixSpeed", Integer.valueOf(20), Integer.valueOf(0), Integer.valueOf(100), v -> this.rainbowPrefix.getValue()));
-    public Setting<String> gameTitle = register(new Setting("Title", "OyVey"));
+    public Setting<String> gameTitle = register(new Setting("Title", "Minecraft 1.12.2"));
     public Setting<String> command = register(new Setting("Command", "OyVey"));
     public Setting<TextUtil.Color> bracketColor = register(new Setting("BracketColor", TextUtil.Color.LIGHT_PURPLE));
     public Setting<TextUtil.Color> commandColor = register(new Setting("NameColor", TextUtil.Color.LIGHT_PURPLE));
@@ -192,7 +192,7 @@ public class HUD extends Module {
                 counter1[0] = counter1[0] + 1;
             }
             if (this.tps.getValue().booleanValue()) {
-                String str = grayString + "TPS " + ChatFormatting.WHITE + OyVey.serverManager.getTPS();
+                String str = grayString + "TPS " + ChatFormatting.GRAY + OyVey.serverManager.getTPS();
                 i += 10;
                 this.renderer.drawString(str, (width - this.renderer.getStringWidth(str) - 2), (height - 2 - i), (ClickGui.getInstance()).rainbow.getValue().booleanValue() ? (((ClickGui.getInstance()).rainbowModeA.getValue() == ClickGui.rainbowModeArray.Up) ? ColorUtil.rainbow(counter1[0] * (ClickGui.getInstance()).rainbowHue.getValue().intValue()).getRGB() : ColorUtil.rainbow((ClickGui.getInstance()).rainbowHue.getValue().intValue()).getRGB()) : this.color, true);
                 counter1[0] = counter1[0] + 1;

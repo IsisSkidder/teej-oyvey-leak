@@ -144,7 +144,7 @@ public class HoleESP extends Module
                                         RenderUtil.drawBoxESP(pos.east().down(), new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.outline.getValue(), new Color(this.cRed.getValue(), this.cGreen.getValue(), this.cBlue.getValue(), this.cAlpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
                                     }
                                     if (this.renderMode.getValue() == RenderMode.Crossed) {
-                                       RenderUtil.drawCrossESP(pos, new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.lineWidth.getValue(), true);
+                                        RenderUtil.drawCrossESP(pos, new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.lineWidth.getValue(), true);
                                         RenderUtil.drawCrossESP(pos.east(), new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.lineWidth.getValue(), true);
                                     }
                                 }

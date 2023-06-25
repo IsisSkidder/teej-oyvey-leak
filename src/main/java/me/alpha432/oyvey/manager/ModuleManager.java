@@ -43,7 +43,6 @@ public class ModuleManager
         this.modules.add(new HUD());
         this.modules.add(new HoleESP());
         this.modules.add(new FakePlayer());
-        this.modules.add(new HitMarkers());
         this.modules.add(new LiquidInteract());
         this.modules.add(new PearlNotify());
         this.modules.add(new ToolTips());
@@ -60,7 +59,7 @@ public class ModuleManager
         this.modules.add(new SwingAnimation());
         this.modules.add(new Clip());
         this.modules.add(new Unicode());
-        this.modules.add(new Trails());
+        this.modules.add(new LogOutSpots());
         this.modules.add(new EffectAlert());
         this.modules.add(new DurabilityAlert());
         this.modules.add(new WhisperSpam());
