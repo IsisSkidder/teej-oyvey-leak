@@ -30,7 +30,7 @@ public class SwingAnimation extends Module {
     }
 
     @Override
-    public String onUpdate() {
+    public void onUpdate() {
         if (playersDisableAnimations.getValue().booleanValue()) {
             for (EntityPlayer player : SwingAnimation.mc.world.playerEntities) {
                 player.limbSwing = Float.intBitsToFloat(Float.floatToIntBits(1.8755627E38f) ^ 0x7F0D1A06);
@@ -50,7 +50,6 @@ public class SwingAnimation extends Module {
             SwingAnimation.mc.entityRenderer.itemRenderer.equippedProgressMainHand = 1.0f;
             SwingAnimation.mc.entityRenderer.itemRenderer.itemStackMainHand = SwingAnimation.mc.player.getHeldItemMainhand();
         }
-        return null;
     }
 
     public static enum AnimationVersion {

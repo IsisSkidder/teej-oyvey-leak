@@ -87,7 +87,7 @@ public class WhisperSpam extends Module
     }
 
     @Override
-    public String onUpdate() {
+    public void onUpdate() {
         ++this.tick_delay;
         if (this.tick_delay < this.delay.getValue() * 10) {
         }
@@ -97,7 +97,6 @@ public class WhisperSpam extends Module
         }
         WhisperSpam.mc.player.sendChatMessage(s.replace("<player>", name));
         this.tick_delay = 0;
-        return s;
     }
 
     public String get_random_name() {

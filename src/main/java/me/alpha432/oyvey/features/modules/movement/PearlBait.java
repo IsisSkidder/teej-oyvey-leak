@@ -63,7 +63,7 @@ public class PearlBait  extends Module {
     }
 
     @Override
-    public String onUpdate() {
+    public void onUpdate() {
         if (thrownPearlId != -1) {
             for (Entity entity : mc.world.loadedEntityList) {
                 if (entity.getEntityId() == thrownPearlId && entity instanceof EntityEnderPearl) {
@@ -80,6 +80,5 @@ public class PearlBait  extends Module {
                 } while (!packets.isEmpty());
             }
         }
-        return null;
     }
 }

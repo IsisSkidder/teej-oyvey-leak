@@ -73,9 +73,8 @@ public class ToolTips
     }
 
     @Override
-    public String onUpdate() {
+    public void onUpdate() {
         if (ToolTips.fullNullCheck()) {
-            return null;
         }
         for (EntityPlayer player : ToolTips.mc.world.playerEntities) {
             if (player == null || !(player.getHeldItemMainhand().getItem() instanceof ItemShulkerBox) || ToolTips.mc.player == player)
@@ -83,7 +82,6 @@ public class ToolTips
             ItemStack stack = player.getHeldItemMainhand();
             this.spiedPlayers.put(player, stack);
         }
-        return null;
     }
 
     @Override

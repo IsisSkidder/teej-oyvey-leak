@@ -29,7 +29,7 @@ public class SilentXP extends Module
     }
 
     @Override
-    public String onUpdate() {
+    public void onUpdate() {
         if (fullNullCheck()) {
         }
         switch (this.mode.getValue()) {
@@ -57,7 +57,6 @@ public class SilentXP extends Module
                 break;
             }
         }
-        return null;
     }
 
     private boolean toggled() {

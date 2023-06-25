@@ -52,6 +52,7 @@ public class ModuleManager
         this.modules.add(new PopCounter());
         this.modules.add(new Offhand());
         this.modules.add(new SmallShield());
+        this.modules.add(new Safety());
         this.modules.add(new Surround());
         this.modules.add(new AutoTrap());
         this.modules.add(new BetterChat());
@@ -59,6 +60,7 @@ public class ModuleManager
         this.modules.add(new SwingAnimation());
         this.modules.add(new Clip());
         this.modules.add(new Unicode());
+        this.modules.add(new Trails());
         this.modules.add(new EffectAlert());
         this.modules.add(new DurabilityAlert());
         this.modules.add(new WhisperSpam());

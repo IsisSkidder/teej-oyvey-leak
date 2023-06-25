@@ -75,7 +75,7 @@ public class Offhand
     }
 
     @Override
-    public String onUpdate() {
+    public void onUpdate() {
         if (this.timer.passedMs(50L)) {
             if (Offhand.mc.player != null && Offhand.mc.player.getHeldItemOffhand().getItem() == Items.GOLDEN_APPLE && Offhand.mc.player.getHeldItemMainhand().getItem() == Items.END_CRYSTAL && Mouse.isButtonDown(1)) {
                 Offhand.mc.player.setActiveHand(EnumHand.OFF_HAND);
@@ -85,14 +85,12 @@ public class Offhand
             Offhand.mc.gameSettings.keyBindUseItem.pressed = false;
         }
         if (Offhand.nullCheck()) {
-            return null;
         }
         this.doOffhand();
         if (this.secondTimer.passedMs(50L) && this.second) {
             this.second = false;
             this.timer.reset();
         }
-        return null;
     }
 
     @SubscribeEvent

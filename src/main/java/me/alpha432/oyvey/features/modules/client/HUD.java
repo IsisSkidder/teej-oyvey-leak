@@ -86,7 +86,7 @@ public class HUD extends Module {
         INSTANCE = this;
     }
 
-    public String onUpdate() {
+    public void onUpdate() {
         if (this.shouldIncrement)
             this.hitMarkerTimer++;
         if (this.hitMarkerTimer == 10) {
@@ -97,7 +97,6 @@ public class HUD extends Module {
             this.players = this.getTextRadarPlayers();
             this.timer.reset();
         }
-        return null;
     }
 
     public void onRender2D(Render2DEvent event) {

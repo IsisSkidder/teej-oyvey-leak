@@ -11,14 +11,12 @@ public class FastPlace
     }
 
     @Override
-    public String onUpdate() {
+    public void onUpdate() {
         if (FastPlace.fullNullCheck()) {
-            return null;
         }
         if (InventoryUtil.holdingItem(ItemExpBottle.class)) {
             FastPlace.mc.rightClickDelayTimer = 0;
         }
-        return null;
     }
 }
 

@@ -35,7 +35,7 @@ public class Clip extends Module {
     }
 
     @Override
-    public String onUpdate() {
+    public void onUpdate() {
         if (isMoving()) {
             toggle();
         }
@@ -50,7 +50,6 @@ public class Clip extends Module {
             mc.player.connection.sendPacket(new CPacketPlayer.Position(roundToClosest(mc.player.posX, Math.floor(mc.player.posX) + 0.23, Math.floor(mc.player.posX) + 0.77), mc.player.posY, roundToClosest(mc.player.posZ, Math.floor(mc.player.posZ) + 0.23, Math.floor(mc.player.posZ) + 0.77), true));
             packets++;
         }
-        return null;
     }
 
     private double roundToClosest(double num, double low, double high) {

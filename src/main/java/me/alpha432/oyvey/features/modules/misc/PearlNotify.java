@@ -31,9 +31,8 @@ public class PearlNotify extends Module {
     }
 
     @Override
-    public String onUpdate() {
+    public void onUpdate() {
         if (PearlNotify.mc.world == null || PearlNotify.mc.player == null) {
-            return null;
         }
         this.enderPearl = null;
         for (final Entity e : PearlNotify.mc.world.loadedEntityList) {
@@ -44,7 +43,6 @@ public class PearlNotify extends Module {
         }
         if (this.enderPearl == null) {
             this.flag = true;
-            return null;
         }
         EntityPlayer closestPlayer = null;
         for (final EntityPlayer entity : PearlNotify.mc.world.playerEntities) {
@@ -70,6 +68,5 @@ public class PearlNotify extends Module {
             Command.sendMessage(OyVey.friendManager.isFriend(closestPlayer.getName()) ? (ChatFormatting.AQUA + closestPlayer.getName() + ChatFormatting.DARK_GRAY + " has just thrown a pearl heading " + faceing + "!") : (ChatFormatting.RED + closestPlayer.getName() + ChatFormatting.DARK_GRAY + " has just thrown a pearl heading " + faceing + "!"));
             this.flag = false;
         }
-        return null;
     }
 }

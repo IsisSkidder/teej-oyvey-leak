@@ -24,9 +24,8 @@ public class CornerClip
     }
 
     @Override
-    public String onUpdate() {
+    public void onUpdate() {
         if (CornerClip.nullCheck()) {
-            return null;
         }
         Vec3d dir = MathUtil.direction(CornerClip.mc.player.rotationYaw);
         if (this.mode.getValue() == Mode.Vertical && this.vmode.getValue() == VMode.Normal) {
@@ -57,7 +56,6 @@ public class CornerClip
             CornerClip.mc.player.connection.sendPacket(new CPacketEntityAction(CornerClip.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
             CornerClip.mc.player.setSneaking(false);
         }
-        return null;
     }
 
     @Override

@@ -47,7 +47,7 @@ public class KillEffects
     }
 
     @Override
-    public String onUpdate() {
+    public void onUpdate() {
         if (KillEffects.mc.world == null) {
             this.playersDead.clear();
         }
@@ -71,7 +71,6 @@ public class KillEffects
                 this.playersDead.add((EntityPlayer)entity);
             }
         });
-        return null;
     }
 
     @SubscribeEvent
