@@ -6,20 +6,18 @@ import me.alpha432.oyvey.features.gui.OyVeyGui;
 import me.alpha432.oyvey.features.gui.components.items.Item;
 import me.alpha432.oyvey.features.gui.components.items.buttons.Button;
 import me.alpha432.oyvey.features.modules.client.ClickGui;
+import me.alpha432.oyvey.features.modules.client.Colors;
 import me.alpha432.oyvey.util.ColorUtil;
 import me.alpha432.oyvey.util.RenderUtil;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.init.SoundEvents;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Iterator;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.init.SoundEvents;
 
-public class Component
-        extends Feature {
+public class Component extends Feature {
     public static int[] counter1 = new int[]{1};
-    private final ArrayList<Item> items = new ArrayList();
-    public boolean drag;
     private int x;
     private int y;
     private int x2;
@@ -27,6 +25,8 @@ public class Component
     private int width;
     private int height;
     private boolean open;
+    public boolean drag;
+    private final ArrayList<Item> items = new ArrayList();
     private boolean hidden = false;
 
     public Component(String name, int x, int y, boolean open) {
@@ -43,36 +43,39 @@ public class Component
     }
 
     private void drag(int mouseX, int mouseY) {
-        if (!this.drag) {
-            return;
+        if (this.drag) {
+            this.x = this.x2 + mouseX;
+            this.y = this.y2 + mouseY;
         }
-        this.x = this.x2 + mouseX;
-        this.y = this.y2 + mouseY;
     }
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drag(mouseX, mouseY);
-        counter1 = new int[]{1};
-        float totalItemHeight = this.open ? this.getTotalItemHeight() - 2.0f : 0.0f;
-        int color = ColorUtil.toARGB(ClickGui.getInstance().topRed.getValue(), ClickGui.getInstance().topGreen.getValue(), ClickGui.getInstance().topBlue.getValue(), 255);
-        Gui.drawRect(this.x, this.y - 1, this.x + this.width, this.y + this.height - 6, ClickGui.getInstance().rainbow.getValue() != false ? ColorUtil.rainbow(ClickGui.getInstance().rainbowHue.getValue()).getRGB() : color);
+        float totalItemHeight = this.open ? this.getTotalItemHeight() - 2.0F : 0.0F;
+        int color = ColorUtil.toARGB(0, 0, 0, 255);
+        RenderUtil.drawRect((float)this.x, (float)this.y - 1.5F, (float)(this.x + this.width), (float)(this.y + this.height - 6), color);
+        RenderUtil.drawRect((float)this.x, (float)this.y + 11.0F, (float)(this.x + this.width), (float)(this.y + this.height - 6), (Boolean)ClickGui.getInstance().colorSync.getValue() ? Colors.INSTANCE.getCurrentColor().getRGB() : ClickGui.getInstance().getColor().getRGB());
         if (this.open) {
-            RenderUtil.drawRect(this.x, (float) this.y + 12.5f, this.x + this.width, (float) (this.y + this.height) + totalItemHeight, 0x77000000);
+            RenderUtil.drawRect((float)this.x, (float)this.y + 12.5F, (float)(this.x + this.width), (float)(this.y + this.height) + totalItemHeight, ColorUtil.toARGB(10, 10, 10, (Integer)ClickGui.getInstance().backgroundAlpha.getValue()));
         }
-        OyVey.textManager.drawStringWithShadow(this.getName(), (float) this.x + 3.0f, (float) this.y - 4.0f - (float) OyVeyGui.getClickGui().getTextOffset(), -1);
+
+        OyVey.textManager.drawStringWithShadow(this.getName(), (float)(this.x + this.width / 2) - (float)this.renderer.getStringWidth(this.getName()) / 2.0F, (float)this.y - 4.5F - (float)OyVeyGui.getClickGui().getTextOffset(), -1);
         if (this.open) {
-            float y = (float) (this.getY() + this.getHeight()) - 3.0f;
-            for (Item item : this.getItems()) {
-                Component.counter1[0] = counter1[0] + 1;
-                if (item.isHidden()) continue;
-                item.setLocation((float) this.x + 2.0f, y);
-                item.setWidth(this.getWidth() - 4);
-                item.drawScreen(mouseX, mouseY, partialTicks);
-                y += (float) item.getHeight() + 1.5f;
+            float y = (float)(this.getY() + this.getHeight()) - 3.0F;
+            Iterator var7 = this.getItems().iterator();
+
+            while(var7.hasNext()) {
+                Item item = (Item)var7.next();
+                if (!item.isHidden()) {
+                    item.setLocation((float)this.x + 2.0F, y);
+                    item.setWidth(this.getWidth() - 4);
+                    item.drawScreen(mouseX, mouseY, partialTicks);
+                    y += (float)item.getHeight() + 1.5F;
+                }
+                if (ClickGui.getInstance().shader.getValue().booleanValue()) {
+                    RenderUtil.drawColorShader(this.x, (int)((double)this.y - 1.5), this.x + this.width, this.y + this.height + (int)totalItemHeight, ColorUtil.toRGBA(new Color(ClickGui.getInstance().shaderRed.getValue(), ClickGui.getInstance().shaderGreen.getValue(), ClickGui.getInstance().shaderBlue.getValue(), ClickGui.getInstance().shaderAlpha.getValue())), ClickGui.getInstance().shaderRadius.getValue());
+                }
             }
-        }
-        if (ClickGui.getInstance().shader.getValue().booleanValue()) {
-            RenderUtil.drawColorShader(this.x, (int)((double)this.y - 1.5), this.x + this.width, this.y + this.height + (int)totalItemHeight, ColorUtil.toRGBA(new Color(ClickGui.getInstance().shaderRed.getValue(), ClickGui.getInstance().shaderGreen.getValue(), ClickGui.getInstance().shaderBlue.getValue(), ClickGui.getInstance().shaderAlpha.getValue())), ClickGui.getInstance().shaderRadius.getValue());
         }
     }
 
@@ -80,68 +83,65 @@ public class Component
         if (mouseButton == 0 && this.isHovering(mouseX, mouseY)) {
             this.x2 = this.x - mouseX;
             this.y2 = this.y - mouseY;
-            OyVeyGui.getClickGui().getComponents().forEach(component -> {
+            OyVeyGui.getClickGui().getComponents().forEach((component) -> {
                 if (component.drag) {
                     component.drag = false;
                 }
+
             });
             this.drag = true;
-            return;
-        }
-        if (mouseButton == 1 && this.isHovering(mouseX, mouseY)) {
+        } else if (mouseButton == 1 && this.isHovering(mouseX, mouseY)) {
             this.open = !this.open;
-            mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0f));
-            return;
+            mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+        } else if (this.open) {
+            this.getItems().forEach((item) -> {
+                item.mouseClicked(mouseX, mouseY, mouseButton);
+            });
         }
-        if (!this.open) {
-            return;
-        }
-        this.getItems().forEach(item -> item.mouseClicked(mouseX, mouseY, mouseButton));
     }
 
     public void mouseReleased(int mouseX, int mouseY, int releaseButton) {
         if (releaseButton == 0) {
             this.drag = false;
         }
-        if (!this.open) {
-            return;
+
+        if (this.open) {
+            this.getItems().forEach((item) -> {
+                item.mouseReleased(mouseX, mouseY, releaseButton);
+            });
         }
-        this.getItems().forEach(item -> item.mouseReleased(mouseX, mouseY, releaseButton));
     }
 
     public void onKeyTyped(char typedChar, int keyCode) {
-        if (!this.open) {
-            return;
+        if (this.open) {
+            this.getItems().forEach((item) -> {
+                item.onKeyTyped(typedChar, keyCode);
+            });
         }
-        this.getItems().forEach(item -> item.onKeyTyped(typedChar, keyCode));
     }
 
     public void addButton(Button button) {
         this.items.add(button);
     }
 
-    public int getX() {
-        return this.x;
-    }
-
     public void setX(int x) {
         this.x = x;
-    }
-
-    public int getY() {
-        return this.y;
     }
 
     public void setY(int y) {
         this.y = y;
     }
 
-    public int getWidth() {
-        return this.width;
+    public int getX() {
+        return this.x;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
+    public int getY() {
+        return this.y;
+    }
+
+    public int getWidth() {
+        return this.width;
     }
 
     public int getHeight() {
@@ -152,12 +152,16 @@ public class Component
         this.height = height;
     }
 
-    public boolean isHidden() {
-        return this.hidden;
+    public void setWidth(int width) {
+        this.width = width;
     }
 
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
+    }
+
+    public boolean isHidden() {
+        return this.hidden;
     }
 
     public boolean isOpen() {
@@ -173,21 +177,13 @@ public class Component
     }
 
     private float getTotalItemHeight() {
-        float height = 0.0f;
-        for (Item item : this.getItems()) {
-            height += (float) item.getHeight() + 1.5f;
+        float height = 0.0F;
+
+        Item item;
+        for(Iterator var2 = this.getItems().iterator(); var2.hasNext(); height += (float)item.getHeight() + 1.5F) {
+            item = (Item)var2.next();
         }
+
         return height;
-    }
-    public static float calculateRotation(float var0) {
-        if ((var0 %= 360.0F) >= 180.0F) {
-            var0 -= 360.0F;
-        }
-
-        if (var0 < -180.0F) {
-            var0 += 360.0F;
-        }
-
-        return var0;
     }
 }

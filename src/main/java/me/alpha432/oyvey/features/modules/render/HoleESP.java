@@ -1,198 +1,100 @@
 package me.alpha432.oyvey.features.modules.render;
 
-import me.alpha432.oyvey.features.modules.*;
-import me.alpha432.oyvey.features.setting.*;
-import me.alpha432.oyvey.event.events.*;
+import java.awt.Color;
+import me.alpha432.oyvey.event.events.Render3DEvent;
+import me.alpha432.oyvey.manager.*;
 import me.alpha432.oyvey.util.BlockUtil;
+import me.alpha432.oyvey.util.ColorUtil;
 import me.alpha432.oyvey.util.RenderUtil;
-import net.minecraft.util.math.*;
-import net.minecraft.init.*;
-import java.awt.*;
-import me.alpha432.oyvey.util.*;
+import me.alpha432.oyvey.features.modules.Module;
+import me.alpha432.oyvey.features.setting.Setting;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 
-public class HoleESP extends Module
-{
-    private static HoleESP INSTANCE;
-    private final Setting<Integer> range;
-    private final Setting<Integer> rangeY;
-    private final Setting<Integer> red;
-    private final Setting<Integer> green;
-    private final Setting<Integer> blue;
-    private final Setting<Integer> alpha;
-    private final Setting<Integer> boxAlpha;
-    private final Setting<Float> lineWidth;
-    private final Setting<Integer> safeRed;
-    private final Setting<Integer> safeGreen;
-    private final Setting<Integer> safeBlue;
-    private final Setting<Integer> safeAlpha;
-    private final Setting<RenderMode> renderMode;
-    public Setting<Boolean> doubleHoles;
-    public Setting<Boolean> fov;
-    public Setting<Boolean> renderOwn;
-    public Setting<Boolean> box;
-    public Setting<Boolean> outline;
-    private final Setting<Integer> cRed;
-    private final Setting<Integer> cGreen;
-    private final Setting<Integer> cBlue;
-    private final Setting<Integer> cAlpha;
-    private final Setting<Integer> safecRed;
-    private final Setting<Integer> safecGreen;
-    private final Setting<Integer> safecBlue;
-    private final Setting<Integer> safecAlpha;
+public class HoleESP
+        extends Module {
+    private final Setting<Boolean> renderOwn = register(new Setting<Boolean>("RenderOwn", true));
+    private final Setting<Boolean> fov = register(new Setting<Boolean>("FovOnly", true));
+    private final Setting<Integer> range = register(new Setting<Integer>("Range", 5, 0, 25));
+    private final Setting<Boolean> box = register(new Setting<Boolean>("Box", true));
+    private final Setting<Boolean> gradientBox = register(new Setting<Boolean>("FadeBox", false));
+    private final Setting<Boolean> invertGradientBox = register(new Setting<Boolean>("InvertBoxFade", false));
+    private final Setting<Boolean> outline = register(new Setting<Boolean>("Outline", true));
+    private final Setting<Boolean> gradientOutline = register(new Setting<Boolean>("FadeLine", false));
+    private final Setting<Boolean> invertGradientOutline = register(new Setting<Boolean>("InvertLineFade", false));
+    private final Setting<Boolean> separateHeight = register(new Setting<Boolean>("SeparateHeight", false));
+    private final Setting<Double> lineHeight = register(new Setting<Double>("LineHeight", -1.1, -2.0, 2.0));
+    private final Setting<Boolean> wireframe = register(new Setting<Boolean>("Wireframe", true));
+    private final Setting<WireframeMode> wireframeMode = register(new Setting<WireframeMode>("Mode", WireframeMode.FLAT));
+    private final Setting<Double> height = register(new Setting<Double>("Height", 0., -2.0, 2.0));
+    private final Setting<Integer> boxAlpha = register(new Setting<Integer>("BoxAlpha", 80, 0, 255));
+    private final Setting<Float> lineWidth = register(new Setting<Float>("LineWidth", Float.valueOf(0.5f), Float.valueOf(0.1f), Float.valueOf(5.0f), v -> (this.outline.getValue() != false || this.wireframe.getValue() != false)));
+    private final Setting<Boolean> rainbow = register(new Setting<Boolean>("Rainbow", false));
+    private final Setting<Color> obbyColor = register(new Setting<Color>("Bedrock", new Color(12721437)));
+    private final Setting<Color> brockColor = register(new Setting<Color>("Bedrock", new Color(12721437)));
+    private final Setting<Boolean> customOutline = register(new Setting<Boolean>("LinColor", false));
+    private final Setting<Color> obbyLineColor = register(new Setting<Color>("Bedrock", new Color(12721437)));
+    private final Setting<Color> brockLineColor = register(new Setting<Color>("Bedrock", new Color(12721437)));
 
     public HoleESP() {
-        super("HoleESP", "Shows safe spots.", Module.Category.RENDER, false, false, false);
-        this.range = (Setting<Integer>)this.register(new Setting("RangeX", 0, 0, 10));
-        this.rangeY = (Setting<Integer>)this.register(new Setting("RangeY", 0, 0, 10));
-        this.red = (Setting<Integer>)this.register(new Setting("Red", 0, 0, 255));
-        this.green = (Setting<Integer>)this.register(new Setting("Green", 255, 0, 255));
-        this.blue = (Setting<Integer>)this.register(new Setting("Blue", 0, 0, 255));
-        this.alpha = (Setting<Integer>)this.register(new Setting("Alpha", 255, 0, 255));
-        this.boxAlpha = (Setting<Integer>)this.register(new Setting("BoxAlpha", 125, 0, 255));
-        this.lineWidth = (Setting<Float>)this.register(new Setting("LineWidth", 1.0f, 0.1f, 5.0f));
-        this.safeRed = (Setting<Integer>)this.register(new Setting("BedrockRed", 0, 0, 255));
-        this.safeGreen = (Setting<Integer>)this.register(new Setting("BedrockGreen", 255, 0, 255));
-        this.safeBlue = (Setting<Integer>)this.register(new Setting("BedrockBlue", 0, 0, 255));
-        this.safeAlpha = (Setting<Integer>)this.register(new Setting("BedrockAlpha", 255, 0, 255));
-        this.renderMode = (Setting<RenderMode>)this.register(new Setting("RenderMode", RenderMode.Crossed));
-        this.doubleHoles = (Setting<Boolean>)this.register(new Setting("DoubleHoles", true));
-        this.fov = (Setting<Boolean>)this.register(new Setting("InFov", true));
-        this.renderOwn = (Setting<Boolean>)this.register(new Setting("RenderOwn", true));
-        this.box = (Setting<Boolean>)this.register(new Setting("Box", true));
-        this.outline = (Setting<Boolean>)this.register(new Setting("Outline", true));
-        this.cRed = (Setting<Integer>)this.register(new Setting("OL-Red", 0, 0, 255, v -> this.outline.getValue()));
-        this.cGreen = (Setting<Integer>)this.register(new Setting("OL-Green", 0, 0, 255, v -> this.outline.getValue()));
-        this.cBlue = (Setting<Integer>)this.register(new Setting("OL-Blue", 255, 0, 255, v -> this.outline.getValue()));
-        this.cAlpha = (Setting<Integer>)this.register(new Setting("OL-Alpha", 255, 0, 255, v -> this.outline.getValue()));
-        this.safecRed = (Setting<Integer>)this.register(new Setting("OL-BedrockRed", 0, 0, 255, v -> this.outline.getValue()));
-        this.safecGreen = (Setting<Integer>)this.register(new Setting("OL-BedrockGreen", 255, 0, 255, v -> this.outline.getValue()));
-        this.safecBlue = (Setting<Integer>)this.register(new Setting("OL-BedrockBlue", 0, 0, 255, v -> this.outline.getValue()));
-        this.safecAlpha = (Setting<Integer>)this.register(new Setting("OL-BedrockAlpha", 255, 0, 255, v -> this.outline.getValue()));
-        this.setInstance();
+        super("HoleESP", "Shows safe spots near you.", Category.RENDER,false,false,false);
     }
 
-    public static HoleESP getInstance() {
-        if (HoleESP.INSTANCE == null) {
-            HoleESP.INSTANCE = new HoleESP();
-        }
-        return HoleESP.INSTANCE;
-    }
-
-    private void setInstance() {
-        HoleESP.INSTANCE = this;
-    }
-
-    public void onRender3D(final Render3DEvent event) {
-        assert HoleESP.mc.renderViewEntity != null;
-        final Vec3i playerPos = new Vec3i(HoleESP.mc.renderViewEntity.posX, HoleESP.mc.renderViewEntity.posY, HoleESP.mc.renderViewEntity.posZ);
+    @Override
+    public void onRender3D(Render3DEvent event) {
+        assert (HoleESP.mc.renderViewEntity != null);
+        Vec3i playerPos = new Vec3i(HoleESP.mc.renderViewEntity.posX, HoleESP.mc.renderViewEntity.posY, HoleESP.mc.renderViewEntity.posZ);
         for (int x = playerPos.getX() - this.range.getValue(); x < playerPos.getX() + this.range.getValue(); ++x) {
             for (int z = playerPos.getZ() - this.range.getValue(); z < playerPos.getZ() + this.range.getValue(); ++z) {
-                for (int y = playerPos.getY() + this.rangeY.getValue(); y > playerPos.getY() - this.rangeY.getValue(); --y) {
-                    final BlockPos pos = new BlockPos(x, y, z);
-                    if (HoleESP.mc.world.getBlockState(pos).getBlock().equals(Blocks.AIR) && HoleESP.mc.world.getBlockState(pos.add(0, 1, 0)).getBlock().equals(Blocks.AIR) && HoleESP.mc.world.getBlockState(pos.add(0, 2, 0)).getBlock().equals(Blocks.AIR) && (!pos.equals((Object)new BlockPos(HoleESP.mc.player.posX, HoleESP.mc.player.posY, HoleESP.mc.player.posZ)) || this.renderOwn.getValue())) {
-                        if (BlockUtil.isPosInFov(pos) || !this.fov.getValue()) {
-                            if (this.doubleHoles.getValue()) {
-                                if (HoleESP.mc.world.getBlockState(pos.north()).getBlock() == Blocks.AIR && HoleESP.mc.world.getBlockState(pos.north().up()).getBlock() == Blocks.AIR && HoleESP.mc.world.getBlockState(pos.north().down()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.north(2)).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.east()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.north().east()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.west()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.north().west()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.south()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.down()).getBlock() == Blocks.BEDROCK) {
-                                    if (this.renderMode.getValue() == RenderMode.Full) {
-                                        RenderUtil.drawBoxESP(pos, new Color(this.safeRed.getValue(), this.safeGreen.getValue(), this.safeBlue.getValue(), this.safeAlpha.getValue()), this.outline.getValue(), new Color(this.safecRed.getValue(), this.safecGreen.getValue(), this.safecBlue.getValue(), this.safecAlpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                        RenderUtil.drawBoxESP(pos.north(), new Color(this.safeRed.getValue(), this.safeGreen.getValue(), this.safeBlue.getValue(), this.safeAlpha.getValue()), this.outline.getValue(), new Color(this.safecRed.getValue(), this.safecGreen.getValue(), this.safecBlue.getValue(), this.safecAlpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                    }
-                                    if (this.renderMode.getValue() == RenderMode.FullOffset) {
-                                        RenderUtil.drawBoxESP(pos.down(), new Color(this.safeRed.getValue(), this.safeGreen.getValue(), this.safeBlue.getValue(), this.safeAlpha.getValue()), this.outline.getValue(), new Color(this.safecRed.getValue(), this.safecGreen.getValue(), this.safecBlue.getValue(), this.safecAlpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                        RenderUtil.drawBoxESP(pos.north().down(), new Color(this.safeRed.getValue(), this.safeGreen.getValue(), this.safeBlue.getValue(), this.safeAlpha.getValue()), this.outline.getValue(), new Color(this.safecRed.getValue(), this.safecGreen.getValue(), this.safecBlue.getValue(), this.safecAlpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                    }
-                                    if (this.renderMode.getValue() == RenderMode.Crossed) {
-                                        RenderUtil.drawCrossESP(pos, new Color(this.safeRed.getValue(), this.safeGreen.getValue(), this.safeBlue.getValue(), this.safeAlpha.getValue()), this.lineWidth.getValue(), true);
-                                        RenderUtil.drawCrossESP(pos.north(), new Color(this.safeRed.getValue(), this.safeGreen.getValue(), this.safeBlue.getValue(), this.safeAlpha.getValue()), this.lineWidth.getValue(), true);
-                                    }
-                                }
-                                else if (HoleESP.mc.world.getBlockState(pos.north()).getBlock() == Blocks.AIR && HoleESP.mc.world.getBlockState(pos.north().up()).getBlock() == Blocks.AIR && (HoleESP.mc.world.getBlockState(pos.north().down()).getBlock() == Blocks.OBSIDIAN || HoleESP.mc.world.getBlockState(pos.north().down()).getBlock() == Blocks.BEDROCK) && (HoleESP.mc.world.getBlockState(pos.north(2)).getBlock() == Blocks.OBSIDIAN || HoleESP.mc.world.getBlockState(pos.north(2)).getBlock() == Blocks.BEDROCK) && (HoleESP.mc.world.getBlockState(pos.east()).getBlock() == Blocks.OBSIDIAN || HoleESP.mc.world.getBlockState(pos.east()).getBlock() == Blocks.BEDROCK) && (HoleESP.mc.world.getBlockState(pos.north().east()).getBlock() == Blocks.OBSIDIAN || HoleESP.mc.world.getBlockState(pos.north().east()).getBlock() == Blocks.BEDROCK) && (HoleESP.mc.world.getBlockState(pos.west()).getBlock() == Blocks.OBSIDIAN || HoleESP.mc.world.getBlockState(pos.west()).getBlock() == Blocks.BEDROCK) && (HoleESP.mc.world.getBlockState(pos.north().west()).getBlock() == Blocks.OBSIDIAN || HoleESP.mc.world.getBlockState(pos.north().west()).getBlock() == Blocks.BEDROCK) && (HoleESP.mc.world.getBlockState(pos.south()).getBlock() == Blocks.OBSIDIAN || HoleESP.mc.world.getBlockState(pos.south()).getBlock() == Blocks.BEDROCK) && (HoleESP.mc.world.getBlockState(pos.down()).getBlock() == Blocks.OBSIDIAN || HoleESP.mc.world.getBlockState(pos.down()).getBlock() == Blocks.BEDROCK)) {
-                                    if (this.renderMode.getValue() == RenderMode.Full) {
-                                        RenderUtil.drawBoxESP(pos, new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.outline.getValue(), new Color(this.cRed.getValue(), this.cGreen.getValue(), this.cBlue.getValue(), this.alpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                        RenderUtil.drawBoxESP(pos.north(), new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.outline.getValue(), new Color(this.cRed.getValue(), this.cGreen.getValue(), this.cBlue.getValue(), this.alpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                    }
-                                    if (this.renderMode.getValue() == RenderMode.FullOffset) {
-                                        RenderUtil.drawBoxESP(pos.down(), new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.outline.getValue(), new Color(this.cRed.getValue(), this.cGreen.getValue(), this.cBlue.getValue(), this.alpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                        RenderUtil.drawBoxESP(pos.north().down(), new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.outline.getValue(), new Color(this.cRed.getValue(), this.cGreen.getValue(), this.cBlue.getValue(), this.alpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                    }
-                                    if (this.renderMode.getValue() == RenderMode.Crossed) {
-                                        RenderUtil.drawCrossESP(pos, new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.lineWidth.getValue(), true);
-                                        RenderUtil.drawCrossESP(pos.north(), new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.lineWidth.getValue(), true);
-                                    }
-                                }
-                                if (HoleESP.mc.world.getBlockState(pos.east()).getBlock() == Blocks.AIR && HoleESP.mc.world.getBlockState(pos.east().up()).getBlock() == Blocks.AIR && HoleESP.mc.world.getBlockState(pos.east().down()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.east(2)).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.east(2).down()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.north()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.east().north()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.west()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.east().south()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.south()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.down()).getBlock() == Blocks.BEDROCK) {
-                                    if (this.renderMode.getValue() == RenderMode.Full) {
-                                        RenderUtil.drawBoxESP(pos, new Color(this.safeRed.getValue(), this.safeGreen.getValue(), this.safeBlue.getValue(), this.safeAlpha.getValue()), this.outline.getValue(), new Color(this.safecRed.getValue(), this.safecGreen.getValue(), this.safecBlue.getValue(), this.safecAlpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                        RenderUtil.drawBoxESP(pos.east(), new Color(this.safeRed.getValue(), this.safeGreen.getValue(), this.safeBlue.getValue(), this.safeAlpha.getValue()), this.outline.getValue(), new Color(this.safecRed.getValue(), this.safecGreen.getValue(), this.safecBlue.getValue(), this.safecAlpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                    }
-                                    if (this.renderMode.getValue() == RenderMode.FullOffset) {
-                                        RenderUtil.drawBoxESP(pos.down(), new Color(this.safeRed.getValue(), this.safeGreen.getValue(), this.safeBlue.getValue(), this.safeAlpha.getValue()), this.outline.getValue(), new Color(this.safecRed.getValue(), this.safecGreen.getValue(), this.safecBlue.getValue(), this.safecAlpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                        RenderUtil.drawBoxESP(pos.east().down(), new Color(this.safeRed.getValue(), this.safeGreen.getValue(), this.safeBlue.getValue(), this.safeAlpha.getValue()), this.outline.getValue(), new Color(this.safecRed.getValue(), this.safecGreen.getValue(), this.safecBlue.getValue(), this.safecAlpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                    }
-                                    if (this.renderMode.getValue() == RenderMode.Crossed) {
-                                        RenderUtil.drawCrossESP(pos, new Color(this.safeRed.getValue(), this.safeGreen.getValue(), this.safeBlue.getValue(), this.safeAlpha.getValue()), this.lineWidth.getValue(), true);
-                                        RenderUtil.drawCrossESP(pos.east(), new Color(this.safeRed.getValue(), this.safeGreen.getValue(), this.safeBlue.getValue(), this.safeAlpha.getValue()), this.lineWidth.getValue(), true);
-                                    }
-                                }
-                                else if (HoleESP.mc.world.getBlockState(pos.east()).getBlock() == Blocks.AIR && HoleESP.mc.world.getBlockState(pos.east().up()).getBlock() == Blocks.AIR && (HoleESP.mc.world.getBlockState(pos.east().down()).getBlock() == Blocks.BEDROCK || HoleESP.mc.world.getBlockState(pos.east().down()).getBlock() == Blocks.OBSIDIAN) && (HoleESP.mc.world.getBlockState(pos.east(2)).getBlock() == Blocks.BEDROCK || HoleESP.mc.world.getBlockState(pos.east(2)).getBlock() == Blocks.OBSIDIAN) && (HoleESP.mc.world.getBlockState(pos.north()).getBlock() == Blocks.BEDROCK || HoleESP.mc.world.getBlockState(pos.north()).getBlock() == Blocks.OBSIDIAN) && (HoleESP.mc.world.getBlockState(pos.east().north()).getBlock() == Blocks.BEDROCK || HoleESP.mc.world.getBlockState(pos.east().north()).getBlock() == Blocks.OBSIDIAN) && (HoleESP.mc.world.getBlockState(pos.west()).getBlock() == Blocks.BEDROCK || HoleESP.mc.world.getBlockState(pos.west()).getBlock() == Blocks.OBSIDIAN) && (HoleESP.mc.world.getBlockState(pos.east().south()).getBlock() == Blocks.BEDROCK || HoleESP.mc.world.getBlockState(pos.east().south()).getBlock() == Blocks.OBSIDIAN) && (HoleESP.mc.world.getBlockState(pos.south()).getBlock() == Blocks.BEDROCK || HoleESP.mc.world.getBlockState(pos.south()).getBlock() == Blocks.OBSIDIAN) && (HoleESP.mc.world.getBlockState(pos.down()).getBlock() == Blocks.BEDROCK || HoleESP.mc.world.getBlockState(pos.down()).getBlock() == Blocks.OBSIDIAN)) {
-                                    if (this.renderMode.getValue() == RenderMode.Full) {
-                                        RenderUtil.drawBoxESP(pos, new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.outline.getValue(), new Color(this.cRed.getValue(), this.cGreen.getValue(), this.cBlue.getValue(), this.cAlpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                        RenderUtil.drawBoxESP(pos.east(), new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.outline.getValue(), new Color(this.cRed.getValue(), this.cGreen.getValue(), this.cBlue.getValue(), this.cAlpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                    }
-                                    if (this.renderMode.getValue() == RenderMode.FullOffset) {
-                                        RenderUtil.drawBoxESP(pos.down(), new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.outline.getValue(), new Color(this.cRed.getValue(), this.cGreen.getValue(), this.cBlue.getValue(), this.cAlpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                        RenderUtil.drawBoxESP(pos.east().down(), new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.outline.getValue(), new Color(this.cRed.getValue(), this.cGreen.getValue(), this.cBlue.getValue(), this.cAlpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                    }
-                                    if (this.renderMode.getValue() == RenderMode.Crossed) {
-                                        RenderUtil.drawCrossESP(pos, new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.lineWidth.getValue(), true);
-                                        RenderUtil.drawCrossESP(pos.east(), new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.lineWidth.getValue(), true);
-                                    }
-                                }
-                            }
-                            if (HoleESP.mc.world.getBlockState(pos.north()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.east()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.west()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.south()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.down()).getBlock() == Blocks.BEDROCK) {
-                                if (this.renderMode.getValue() == RenderMode.Full) {
-                                    RenderUtil.drawBoxESP(pos, new Color(this.safeRed.getValue(), this.safeGreen.getValue(), this.safeBlue.getValue(), this.safeAlpha.getValue()), this.outline.getValue(), new Color(this.safecRed.getValue(), this.safecGreen.getValue(), this.safecBlue.getValue(), this.safecAlpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                }
-                                if (this.renderMode.getValue() == RenderMode.FullOffset) {
-                                    RenderUtil.drawBoxESP(pos.down(), new Color(this.safeRed.getValue(), this.safeGreen.getValue(), this.safeBlue.getValue(), this.safeAlpha.getValue()), this.outline.getValue(), new Color(this.safecRed.getValue(), this.safecGreen.getValue(), this.safecBlue.getValue(), this.safecAlpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                }
-                                if (this.renderMode.getValue() == RenderMode.Crossed) {
-                                    RenderUtil.drawCrossESP(pos, new Color(this.safeRed.getValue(), this.safeGreen.getValue(), this.safeBlue.getValue(), this.safeAlpha.getValue()), this.lineWidth.getValue(), true);
-                                }
-                                if (this.renderMode.getValue() == RenderMode.Fluctuate) {
-                                    RenderUtil.drawFlucESP(pos, new Color(this.safeRed.getValue(), this.safeGreen.getValue(), this.safeBlue.getValue(), this.safeAlpha.getValue()), this.lineWidth.getValue(), true);
-                                }
-                            }
-                            else if (BlockUtil.isBlockUnSafe(HoleESP.mc.world.getBlockState(pos.down()).getBlock()) && BlockUtil.isBlockUnSafe(HoleESP.mc.world.getBlockState(pos.east()).getBlock()) && BlockUtil.isBlockUnSafe(HoleESP.mc.world.getBlockState(pos.west()).getBlock()) && BlockUtil.isBlockUnSafe(HoleESP.mc.world.getBlockState(pos.south()).getBlock())) {
-                                if (BlockUtil.isBlockUnSafe(HoleESP.mc.world.getBlockState(pos.north()).getBlock())) {
-                                    if (this.renderMode.getValue() == RenderMode.Full) {
-                                        RenderUtil.drawBoxESP(pos, new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.outline.getValue(), new Color(this.cRed.getValue(), this.cGreen.getValue(), this.cBlue.getValue(), this.cAlpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                    }
-                                    if (this.renderMode.getValue() == RenderMode.FullOffset) {
-                                        RenderUtil.drawBoxESP(pos.down(), new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue()), this.outline.getValue(), new Color(this.cRed.getValue(), this.cGreen.getValue(), this.cBlue.getValue(), this.cAlpha.getValue()), this.lineWidth.getValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true);
-                                    }
-                                    if (this.renderMode.getValue() == RenderMode.Crossed) {
-                                        RenderUtil.drawCrossESP(pos, new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.safeAlpha.getValue()), this.lineWidth.getValue(), true);
-                                    }
-                                }
-                            }
-                        }
+                int rangeY = 5;
+                for (int y = playerPos.getY() + rangeY; y > playerPos.getY() - rangeY; --y) {
+                    BlockPos pos = new BlockPos(x, y, z);
+                    Color safeColor = this.rainbow.getValue() != false ? ColorManager.getRainbow() : this.brockColor.getValue();
+                    Color color = this.rainbow.getValue() != false ? ColorManager.getRainbow() : this.obbyColor.getValue();
+                    Color safecColor = this.brockLineColor.getValue();
+                    Color cColor = this.obbyLineColor.getValue();
+                    if (!HoleESP.mc.world.getBlockState(pos).getBlock().equals((Object)Blocks.AIR) || !HoleESP.mc.world.getBlockState(pos.add(0, 1, 0)).getBlock().equals((Object)Blocks.AIR) || !HoleESP.mc.world.getBlockState(pos.add(0, 2, 0)).getBlock().equals((Object)Blocks.AIR) || pos.equals((Object)new BlockPos(HoleESP.mc.player.posX, HoleESP.mc.player.posY, HoleESP.mc.player.posZ)) && !this.renderOwn.getValue().booleanValue() || !RotationManager.isInFov(pos) && this.fov.getValue().booleanValue()) continue;
+                    if (HoleESP.mc.world.getBlockState(pos.north()).getBlock() == Blocks.AIR && HoleESP.mc.world.getBlockState(pos.north().up()).getBlock() == Blocks.AIR && HoleESP.mc.world.getBlockState(pos.north().down()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.north(2)).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.east()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.north().east()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.west()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.north().west()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.south()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.down()).getBlock() == Blocks.BEDROCK) {
+                        this.drawDoubles(true, pos, safeColor, this.customOutline.getValue(), safecColor, this.lineWidth.getValue().floatValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true, this.height.getValue(), this.separateHeight.getValue() != false ? this.lineHeight.getValue().doubleValue() : this.height.getValue().doubleValue(), this.gradientBox.getValue(), this.gradientOutline.getValue(), this.invertGradientBox.getValue(), this.invertGradientOutline.getValue(), 0, this.wireframe.getValue(), this.wireframeMode.getValue() == WireframeMode.FLAT);
+                    } else if (!(HoleESP.mc.world.getBlockState(pos.north()).getBlock() != Blocks.AIR || HoleESP.mc.world.getBlockState(pos.north().up()).getBlock() != Blocks.AIR || HoleESP.mc.world.getBlockState(pos.north().down()).getBlock() != Blocks.OBSIDIAN && HoleESP.mc.world.getBlockState(pos.north().down()).getBlock() != Blocks.BEDROCK || HoleESP.mc.world.getBlockState(pos.north(2)).getBlock() != Blocks.OBSIDIAN && HoleESP.mc.world.getBlockState(pos.north(2)).getBlock() != Blocks.BEDROCK || HoleESP.mc.world.getBlockState(pos.east()).getBlock() != Blocks.OBSIDIAN && HoleESP.mc.world.getBlockState(pos.east()).getBlock() != Blocks.BEDROCK || HoleESP.mc.world.getBlockState(pos.north().east()).getBlock() != Blocks.OBSIDIAN && HoleESP.mc.world.getBlockState(pos.north().east()).getBlock() != Blocks.BEDROCK || HoleESP.mc.world.getBlockState(pos.west()).getBlock() != Blocks.OBSIDIAN && HoleESP.mc.world.getBlockState(pos.west()).getBlock() != Blocks.BEDROCK || HoleESP.mc.world.getBlockState(pos.north().west()).getBlock() != Blocks.OBSIDIAN && HoleESP.mc.world.getBlockState(pos.north().west()).getBlock() != Blocks.BEDROCK || HoleESP.mc.world.getBlockState(pos.south()).getBlock() != Blocks.OBSIDIAN && HoleESP.mc.world.getBlockState(pos.south()).getBlock() != Blocks.BEDROCK || HoleESP.mc.world.getBlockState(pos.down()).getBlock() != Blocks.OBSIDIAN && HoleESP.mc.world.getBlockState(pos.down()).getBlock() != Blocks.BEDROCK)) {
+                        this.drawDoubles(true, pos, color, this.customOutline.getValue(), cColor, this.lineWidth.getValue().floatValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true, this.height.getValue(), this.separateHeight.getValue() != false ? this.lineHeight.getValue().doubleValue() : this.height.getValue().doubleValue(), this.gradientBox.getValue(), this.gradientOutline.getValue(), this.invertGradientBox.getValue(), this.invertGradientOutline.getValue(), 0, this.wireframe.getValue(), this.wireframeMode.getValue() == WireframeMode.FLAT);
                     }
+                    if (HoleESP.mc.world.getBlockState(pos.east()).getBlock() == Blocks.AIR && HoleESP.mc.world.getBlockState(pos.east().up()).getBlock() == Blocks.AIR && HoleESP.mc.world.getBlockState(pos.east().down()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.east(2)).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.east(2).down()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.north()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.east().north()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.west()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.east().south()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.south()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.down()).getBlock() == Blocks.BEDROCK) {
+                        this.drawDoubles(false, pos, safeColor, this.customOutline.getValue(), safecColor, this.lineWidth.getValue().floatValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true, this.height.getValue(), this.separateHeight.getValue() != false ? this.lineHeight.getValue().doubleValue() : this.height.getValue().doubleValue(), this.gradientBox.getValue(), this.gradientOutline.getValue(), this.invertGradientBox.getValue(), this.invertGradientOutline.getValue(), 0, this.wireframe.getValue(), this.wireframeMode.getValue() == WireframeMode.FLAT);
+                    } else if (!(HoleESP.mc.world.getBlockState(pos.east()).getBlock() != Blocks.AIR || HoleESP.mc.world.getBlockState(pos.east().up()).getBlock() != Blocks.AIR || HoleESP.mc.world.getBlockState(pos.east().down()).getBlock() != Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.east().down()).getBlock() != Blocks.OBSIDIAN || HoleESP.mc.world.getBlockState(pos.east(2)).getBlock() != Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.east(2)).getBlock() != Blocks.OBSIDIAN || HoleESP.mc.world.getBlockState(pos.north()).getBlock() != Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.north()).getBlock() != Blocks.OBSIDIAN || HoleESP.mc.world.getBlockState(pos.east().north()).getBlock() != Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.east().north()).getBlock() != Blocks.OBSIDIAN || HoleESP.mc.world.getBlockState(pos.west()).getBlock() != Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.west()).getBlock() != Blocks.OBSIDIAN || HoleESP.mc.world.getBlockState(pos.east().south()).getBlock() != Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.east().south()).getBlock() != Blocks.OBSIDIAN || HoleESP.mc.world.getBlockState(pos.south()).getBlock() != Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.south()).getBlock() != Blocks.OBSIDIAN || HoleESP.mc.world.getBlockState(pos.down()).getBlock() != Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.down()).getBlock() != Blocks.OBSIDIAN)) {
+                        this.drawDoubles(false, pos, color, this.customOutline.getValue(), cColor, this.lineWidth.getValue().floatValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true, this.height.getValue(), this.separateHeight.getValue() != false ? this.lineHeight.getValue().doubleValue() : this.height.getValue().doubleValue(), this.gradientBox.getValue(), this.gradientOutline.getValue(), this.invertGradientBox.getValue(), this.invertGradientOutline.getValue(), 0, this.wireframe.getValue(), this.wireframeMode.getValue() == WireframeMode.FLAT);
+                    }
+                    if (HoleESP.mc.world.getBlockState(pos.north()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.east()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.west()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.south()).getBlock() == Blocks.BEDROCK && HoleESP.mc.world.getBlockState(pos.down()).getBlock() == Blocks.BEDROCK) {
+                        this.drawHoleESP(pos, safeColor, this.customOutline.getValue(), safecColor, this.lineWidth.getValue().floatValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true, this.height.getValue(), this.separateHeight.getValue() != false ? this.lineHeight.getValue().doubleValue() : this.height.getValue().doubleValue(), this.gradientBox.getValue(), this.gradientOutline.getValue(), this.invertGradientBox.getValue(), this.invertGradientOutline.getValue(), 0, this.wireframe.getValue(), this.wireframeMode.getValue() == WireframeMode.FLAT);
+                        continue;
+                    }
+                    if (!BlockUtil.isUnsafe(HoleESP.mc.world.getBlockState(pos.down()).getBlock()) || !BlockUtil.isUnsafe(HoleESP.mc.world.getBlockState(pos.east()).getBlock()) || !BlockUtil.isUnsafe(HoleESP.mc.world.getBlockState(pos.west()).getBlock()) || !BlockUtil.isUnsafe(HoleESP.mc.world.getBlockState(pos.south()).getBlock()) || !BlockUtil.isUnsafe(HoleESP.mc.world.getBlockState(pos.north()).getBlock())) continue;
+                    this.drawHoleESP(pos, color, this.customOutline.getValue(), cColor, this.lineWidth.getValue().floatValue(), this.outline.getValue(), this.box.getValue(), this.boxAlpha.getValue(), true, this.height.getValue(), this.separateHeight.getValue() != false ? this.lineHeight.getValue().doubleValue() : this.height.getValue().doubleValue(), this.gradientBox.getValue(), this.gradientOutline.getValue(), this.invertGradientBox.getValue(), this.invertGradientOutline.getValue(), 0, this.wireframe.getValue(), this.wireframeMode.getValue() == WireframeMode.FLAT);
                 }
             }
         }
     }
 
-    static {
-        HoleESP.INSTANCE = new HoleESP();
+    public void drawDoubles(boolean faceNorth, BlockPos pos, Color color, boolean secondC, Color secondColor, float lineWidth, boolean outline, boolean box, int boxAlpha, boolean air, double height, double lineHeight, boolean gradientBox, boolean gradientOutline, boolean invertGradientBox, boolean invertGradientOutline, int gradientAlpha, boolean cross, boolean flatCross) {
+        this.drawHoleESP(pos, color, secondC, secondColor, lineWidth, outline, box, boxAlpha, air, height, lineHeight, gradientBox, gradientOutline, invertGradientBox, invertGradientOutline, gradientAlpha, cross, flatCross);
+        this.drawHoleESP(faceNorth ? pos.north() : pos.east(), color, secondC, secondColor, lineWidth, outline, box, boxAlpha, air, height, lineHeight, gradientBox, gradientOutline, invertGradientBox, invertGradientOutline, gradientAlpha, cross, flatCross);
     }
 
-    public enum RenderMode
-    {
-        Full,
-        FullOffset,
-        Crossed,
-        CrossedFull,
-        Fluctuate;
+    public void drawHoleESP(BlockPos pos, Color color, boolean secondC, Color secondColor, float lineWidth, boolean outline, boolean box, int boxAlpha, boolean air, double height, double lineHeight, boolean gradientBox, boolean gradientOutline, boolean invertGradientBox, boolean invertGradientOutline, int gradientAlpha, boolean cross, boolean flatCross) {
+        if (box) {
+            RenderUtil.drawBox(pos, ColorUtil.injectAlpha(color, boxAlpha), height, gradientBox, invertGradientBox, gradientAlpha);
+        }
+        if (outline) {
+            RenderUtil.drawBlockOutline(pos, secondC ? secondColor : color, lineWidth, air, lineHeight, gradientOutline, invertGradientOutline, gradientAlpha, false);
+        }
+        if (cross) {
+            RenderUtil.drawBlockWireframe(pos, secondC ? secondColor : color, lineWidth, height, flatCross);
+        }
+    }
+
+    private enum WireframeMode {
+        FLAT,
+        FULL;
     }
 }

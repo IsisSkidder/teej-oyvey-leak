@@ -164,6 +164,10 @@ public class BlockUtil
         }
         return isHole;
     }
+    public static boolean isUnsafe(Block block) {
+        List<Block> unsafeBlocks = Arrays.asList(new Block[]{Blocks.OBSIDIAN, Blocks.BEDROCK, Blocks.ENDER_CHEST, Blocks.ANVIL});
+        return unsafeBlocks.contains((Object) block);
+    }
 
     public static boolean placeBlockSmartRotate(BlockPos pos, EnumHand hand, boolean rotate, boolean packet, boolean isSneaking) {
         boolean sneaking = false;
@@ -289,7 +293,7 @@ public class BlockUtil
         return BlockUtil.getState(pos).getBlock();
     }
 
-    private static IBlockState getState(BlockPos pos) {
+    static IBlockState getState(BlockPos pos) {
         return BlockUtil.mc.world.getBlockState(pos);
     }
 

@@ -1,6 +1,7 @@
 package me.alpha432.oyvey.manager;
 
 import me.alpha432.oyvey.features.Feature;
+import me.alpha432.oyvey.util.BlockUtil;
 import me.alpha432.oyvey.util.MathUtil;
 import me.alpha432.oyvey.util.RotationUtil;
 import net.minecraft.entity.Entity;
@@ -52,6 +53,19 @@ public class RotationManager
     public void lookAtEntity(Entity entity) {
         float[] angle = MathUtil.calcAngle(RotationManager.mc.player.getPositionEyes(mc.getRenderPartialTicks()), entity.getPositionEyes(mc.getRenderPartialTicks()));
         this.setPlayerRotations(angle[0], angle[1]);
+    }
+    public static boolean isInFov(BlockPos pos) {
+        int yaw = pos.getY();
+        if (yaw == 0 && (double) pos.getZ() - BlockUtil.mc.player.getPositionVector().z < 0.0) {
+            return false;
+        }
+        if (yaw == 1 && (double) pos.getX() - BlockUtil.mc.player.getPositionVector().x > 0.0) {
+            return false;
+        }
+        if (yaw == 2 && (double) pos.getZ() - BlockUtil.mc.player.getPositionVector().z > 0.0) {
+            return false;
+        }
+        return yaw != 3 || (double) pos.getX() - BlockUtil.mc.player.getPositionVector().x >= 0.0;
     }
 
     public void setPlayerPitch(float pitch) {

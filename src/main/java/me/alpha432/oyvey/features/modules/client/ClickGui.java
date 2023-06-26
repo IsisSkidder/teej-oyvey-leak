@@ -2,6 +2,7 @@ package me.alpha432.oyvey.features.modules.client;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.alpha432.oyvey.OyVey;
+import java.awt.Color;
 import me.alpha432.oyvey.event.events.ClientEvent;
 import me.alpha432.oyvey.features.command.Command;
 import me.alpha432.oyvey.features.gui.OyVeyGui;
@@ -23,6 +24,9 @@ public class ClickGui
     public Setting<Integer> blue = this.register(new Setting<Integer>("Blue", 255, 0, 255));
     public Setting<Integer> hoverAlpha = this.register(new Setting<Integer>("Alpha", 180, 0, 255));
     public Setting<Integer> topRed = this.register(new Setting<Integer>("SecondRed", 0, 0, 255));
+    public Setting<String> moduleButton = this.register(new Setting("Buttons", ""));
+    public Setting<Boolean> colorSync = this.register(new Setting("ColorSync", false));
+    public Setting<Integer> backgroundAlpha = this.register(new Setting("BackgroundAlpha", 140, 0, 255));
     public Setting<Integer> topGreen = this.register(new Setting<Integer>("SecondGreen", 0, 0, 255));
     public Setting<Integer> topBlue = this.register(new Setting<Integer>("SecondBlue", 150, 0, 255));
     public Setting<Integer> alpha = this.register(new Setting<Integer>("HoverAlpha", 240, 0, 255));
@@ -94,6 +98,9 @@ public class ClickGui
         if (!(ClickGui.mc.currentScreen instanceof OyVeyGui)) {
             this.disable();
         }
+    }
+    public Color getColor() {
+        return new Color((Integer) this.red.getValue(), (Integer) this.green.getValue(), (Integer) this.blue.getValue(), (Integer) this.alpha.getValue());
     }
 
     public enum rainbowModeArray {

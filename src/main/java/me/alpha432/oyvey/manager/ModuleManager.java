@@ -57,13 +57,15 @@ public class ModuleManager
         this.modules.add(new BetterChat());
         this.modules.add(new ModifyCrystal());
         this.modules.add(new SwingAnimation());
+        this.modules.add(new ItemStats());
         this.modules.add(new Clip());
+        this.modules.add(new Trajectories());
         this.modules.add(new Unicode());
-        this.modules.add(new LogOutSpots());
         this.modules.add(new EffectAlert());
         this.modules.add(new DurabilityAlert());
         this.modules.add(new WhisperSpam());
         this.modules.add(new Coords());
+        this.modules.add(new GuiBlur());
         this.modules.add(new Killaura());
         this.modules.add(new FastPlace());
         this.modules.add(new ESP());
