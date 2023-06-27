@@ -15,27 +15,27 @@ import net.minecraft.util.math.Vec3i;
 public class HoleESP
         extends Module {
     private final Setting<Boolean> renderOwn = register(new Setting<Boolean>("RenderOwn", true));
-    private final Setting<Boolean> fov = register(new Setting<Boolean>("FovOnly", true));
+    private final Setting<Boolean> fov = register(new Setting<Boolean>("FovOnly", false));
     private final Setting<Integer> range = register(new Setting<Integer>("Range", 5, 0, 25));
-    private final Setting<Boolean> box = register(new Setting<Boolean>("Box", true));
+    private final Setting<Boolean> box = register(new Setting<Boolean>("Box", false));
     private final Setting<Boolean> gradientBox = register(new Setting<Boolean>("FadeBox", false));
     private final Setting<Boolean> invertGradientBox = register(new Setting<Boolean>("InvertBoxFade", false));
     private final Setting<Boolean> outline = register(new Setting<Boolean>("Outline", true));
     private final Setting<Boolean> gradientOutline = register(new Setting<Boolean>("FadeLine", false));
     private final Setting<Boolean> invertGradientOutline = register(new Setting<Boolean>("InvertLineFade", false));
-    private final Setting<Boolean> separateHeight = register(new Setting<Boolean>("SeparateHeight", false));
-    private final Setting<Double> lineHeight = register(new Setting<Double>("LineHeight", -1.1, -2.0, 2.0));
+    private final Setting<Boolean> separateHeight = register(new Setting<Boolean>("SeparateHeight", true));
+    private final Setting<Double> lineHeight = register(new Setting<Double>("LineHeight", -1.0, -2.0, 2.0));
     private final Setting<Boolean> wireframe = register(new Setting<Boolean>("Wireframe", true));
     private final Setting<WireframeMode> wireframeMode = register(new Setting<WireframeMode>("Mode", WireframeMode.FLAT));
-    private final Setting<Double> height = register(new Setting<Double>("Height", 0., -2.0, 2.0));
-    private final Setting<Integer> boxAlpha = register(new Setting<Integer>("BoxAlpha", 80, 0, 255));
-    private final Setting<Float> lineWidth = register(new Setting<Float>("LineWidth", Float.valueOf(0.5f), Float.valueOf(0.1f), Float.valueOf(5.0f), v -> (this.outline.getValue() != false || this.wireframe.getValue() != false)));
+    private final Setting<Double> height = register(new Setting<Double>("Height", 0.0, -2.0, 5.0));
+    private final Setting<Integer> boxAlpha = register(new Setting<Integer>("BoxAlpha", 120, 0, 255));
+    private final Setting<Float> lineWidth = register(new Setting<Float>("LineWidth", Float.valueOf(1.0f), Float.valueOf(0.1f), Float.valueOf(5.0f), v -> (this.outline.getValue() != false || this.wireframe.getValue() != false)));
     private final Setting<Boolean> rainbow = register(new Setting<Boolean>("Rainbow", false));
-    private final Setting<Color> obbyColor = register(new Setting<Color>("Bedrock", new Color(12721437)));
-    private final Setting<Color> brockColor = register(new Setting<Color>("Bedrock", new Color(12721437)));
-    private final Setting<Boolean> customOutline = register(new Setting<Boolean>("LinColor", false));
-    private final Setting<Color> obbyLineColor = register(new Setting<Color>("Bedrock", new Color(12721437)));
-    private final Setting<Color> brockLineColor = register(new Setting<Color>("Bedrock", new Color(12721437)));
+    private final Setting<Color> obbyColor = register(new Setting<Color>("ObbyColor", new Color(12721437)));
+    private final Setting<Color> brockColor = register(new Setting<Color>("BedrockColor", new Color(917248)));
+    private final Setting<Boolean> customOutline = register(new Setting<Boolean>("LineColor", false));
+    private final Setting<Color> obbyLineColor = register(new Setting<Color>("ObbyLine", new Color(12721437)));
+    private final Setting<Color> brockLineColor = register(new Setting<Color>("BedrockLine", new Color(917248)));
 
     public HoleESP() {
         super("HoleESP", "Shows safe spots near you.", Category.RENDER,false,false,false);
@@ -89,7 +89,7 @@ public class HoleESP
             RenderUtil.drawBlockOutline(pos, secondC ? secondColor : color, lineWidth, air, lineHeight, gradientOutline, invertGradientOutline, gradientAlpha, false);
         }
         if (cross) {
-            RenderUtil.drawBlockWireframe(pos, secondC ? secondColor : color, lineWidth, height, flatCross);
+            RenderUtil.drawBlockWireframe(pos, secondC ? secondColor : color, lineWidth, flatCross);
         }
     }
 

@@ -1,14 +1,20 @@
 package me.alpha432.oyvey.util;
 
 import me.alpha432.oyvey.util.Util;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import org.lwjgl.opengl.GL11;
+import java.awt.Color;
+import java.util.Objects;
 
 public class InterpolationUtil
         implements Util {
     public static Vec3d getInterpolatedPos(Entity entity, float partialTicks, boolean wrap) {
-        Vec3d amount = new Vec3d((entity.posX - entity.lastTickPosX) * (double)partialTicks, (entity.posY - entity.lastTickPosY) * (double)partialTicks, (entity.posZ - entity.lastTickPosZ) * (double)partialTicks);
+        Vec3d amount = new Vec3d((entity.posX - entity.lastTickPosX) * (double) partialTicks, (entity.posY - entity.lastTickPosY) * (double) partialTicks, (entity.posZ - entity.lastTickPosZ) * (double) partialTicks);
         Vec3d vec = new Vec3d(entity.lastTickPosX, entity.lastTickPosY, entity.lastTickPosZ).add(amount);
         if (wrap) {
             return vec.subtract(InterpolationUtil.mc.getRenderManager().renderPosX, InterpolationUtil.mc.getRenderManager().renderPosY, InterpolationUtil.mc.getRenderManager().renderPosZ);
@@ -25,14 +31,14 @@ public class InterpolationUtil
     }
 
     public static Vec3d interpolateEntity(Entity entity, float time) {
-        return new Vec3d(entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double)time, entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double)time, entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double)time);
+        return new Vec3d(entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double) time, entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double) time, entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double) time);
     }
 
     public static double getInterpolatedDouble(double pre, double current, float partialTicks) {
-        return pre + (current - pre) * (double)partialTicks;
+        return pre + (current - pre) * (double) partialTicks;
     }
 
     public static float getInterpolatedFloat(float pre, float current, float partialTicks) {
         return pre + (current - pre) * partialTicks;
+        }
     }
-}

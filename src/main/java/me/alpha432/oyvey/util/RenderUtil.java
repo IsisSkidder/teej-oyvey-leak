@@ -1,23 +1,25 @@
 package me.alpha432.oyvey.util;
 
+import com.google.common.collect.Maps;
 import me.alpha432.oyvey.OyVey;
 import net.minecraft.block.material.*;
 import net.minecraft.block.state.*;
 import net.minecraft.client.*;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.crash.CrashReport;
 import net.minecraft.world.*;
-import net.minecraft.client.gui.*;
 import net.minecraft.client.model.*;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.culling.*;
 import net.minecraft.client.renderer.culling.*;
 import net.minecraft.client.renderer.vertex.*;
 import net.minecraft.client.shader.*;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.*;
 import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.*;
 import net.minecraft.util.math.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
@@ -26,26 +28,37 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.Sphere;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class RenderUtil
         implements Util {
     private static final Frustum frustrum = new Frustum();
+    public static final Map < Class <? extends Entity > , Render <? extends Entity >> entityRenderMap = Maps. < Class <? extends Entity > , Render <? extends Entity >> newHashMap();
     private static final FloatBuffer screenCoords = BufferUtils.createFloatBuffer(3);
     private static final IntBuffer viewport = BufferUtils.createIntBuffer(16);
     private static final FloatBuffer modelView = BufferUtils.createFloatBuffer(16);
     private static final FloatBuffer projection = BufferUtils.createFloatBuffer(16);
     public static RenderItem itemRender = RenderUtil.mc.getItemRenderer().itemRenderer;
+    private static final Map<String, RenderPlayer> skinMap = Maps.<String, RenderPlayer>newHashMap();
     public static ICamera camera = new Frustum();
+    private static RenderPlayer playerRenderer;
+    public static TextureManager renderEngine;
+    private static boolean debugBoundingBox;
     private static boolean depth = GL11.glIsEnabled(2896);
     private static boolean texture = GL11.glIsEnabled(3042);
     private static boolean clean = GL11.glIsEnabled(3553);
     private static boolean bind = GL11.glIsEnabled(2929);
     private static boolean override = GL11.glIsEnabled(2848);
+    public static double renderPosX;
+    public static double renderPosY;
+    public static double renderPosZ;
+    private static boolean renderOutlines;
 
     static {
         itemRender = mc.getRenderItem();
@@ -188,6 +201,46 @@ public class RenderUtil
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
         GlStateManager.popMatrix();
+    }
+
+    private static void renderDebugBoundingBox(Entity entityIn, double x, double y, double z, float entityYaw, float partialTicks) {
+        GlStateManager.depthMask(false);
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableLighting();
+        GlStateManager.disableCull();
+        GlStateManager.disableBlend();
+        float f = entityIn.width / 2.0F;
+        AxisAlignedBB axisalignedbb = entityIn.getEntityBoundingBox();
+        RenderGlobal.drawBoundingBox(axisalignedbb.minX - entityIn.posX + x, axisalignedbb.minY - entityIn.posY + y, axisalignedbb.minZ - entityIn.posZ + z, axisalignedbb.maxX - entityIn.posX + x, axisalignedbb.maxY - entityIn.posY + y, axisalignedbb.maxZ - entityIn.posZ + z, 1.0F, 1.0F, 1.0F, 1.0F);
+        Entity[] aentity = entityIn.getParts();
+
+        if (aentity != null) {
+            for (Entity entity : aentity) {
+                double d0 = (entity.posX - entity.prevPosX) * (double) partialTicks;
+                double d1 = (entity.posY - entity.prevPosY) * (double) partialTicks;
+                double d2 = (entity.posZ - entity.prevPosZ) * (double) partialTicks;
+                AxisAlignedBB axisalignedbb1 = entity.getEntityBoundingBox();
+                RenderGlobal.drawBoundingBox(axisalignedbb1.minX - renderPosX + d0, axisalignedbb1.minY - renderPosY + d1, axisalignedbb1.minZ - renderPosZ + d2, axisalignedbb1.maxX - renderPosX + d0, axisalignedbb1.maxY - renderPosY + d1, axisalignedbb1.maxZ - renderPosZ + d2, 0.25F, 1.0F, 0.0F, 1.0F);
+            }
+        }
+
+        if (entityIn instanceof EntityLivingBase) {
+            float f1 = 0.01F;
+            RenderGlobal.drawBoundingBox(x - (double) f, y + (double) entityIn.getEyeHeight() - 0.009999999776482582D, z - (double) f, x + (double) f, y + (double) entityIn.getEyeHeight() + 0.009999999776482582D, z + (double) f, 1.0F, 0.0F, 0.0F, 1.0F);
+        }
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        Vec3d vec3d = entityIn.getLook(partialTicks);
+        bufferbuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
+        bufferbuilder.pos(x, y + (double) entityIn.getEyeHeight(), z).color(0, 0, 255, 255).endVertex();
+        bufferbuilder.pos(x + vec3d.x * 2.0D, y + (double) entityIn.getEyeHeight() + vec3d.y * 2.0D, z + vec3d.z * 2.0D).color(0, 0, 255, 255).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableLighting();
+        GlStateManager.enableCull();
+        GlStateManager.disableBlend();
+        GlStateManager.depthMask(true);
     }
 
     static int gradientColor(int color, int percentage) {
@@ -476,6 +529,31 @@ public class RenderUtil
         Vec3d interp = InterpolationUtil.getInterpolatedPos((Entity) RenderUtil.mc.player, mc.getRenderPartialTicks(), false);
         RenderUtil.drawFadingOutline(iblockstate.getSelectedBoundingBox((World) RenderUtil.mc.world, pos).grow((double) 0.002f).offset(-interp.x, -interp.y, -interp.z).expand(0.0, 0.0, 0.0), startColor, endColor, linewidth, height);
     }
+
+    public static void renderEntityStatic(Entity entityIn, float partialTicks, boolean p_188388_3_) {
+        if (entityIn.ticksExisted == 0) {
+            entityIn.lastTickPosX = entityIn.posX;
+            entityIn.lastTickPosY = entityIn.posY;
+            entityIn.lastTickPosZ = entityIn.posZ;
+        }
+
+        double d0 = entityIn.lastTickPosX + (entityIn.posX - entityIn.lastTickPosX) * (double) partialTicks;
+        double d1 = entityIn.lastTickPosY + (entityIn.posY - entityIn.lastTickPosY) * (double) partialTicks;
+        double d2 = entityIn.lastTickPosZ + (entityIn.posZ - entityIn.lastTickPosZ) * (double) partialTicks;
+        float f = entityIn.prevRotationYaw + (entityIn.rotationYaw - entityIn.prevRotationYaw) * partialTicks;
+        int i = entityIn.getBrightnessForRender();
+
+        if (entityIn.isBurning()) {
+            i = 15728880;
+        }
+
+        int j = i % 65536;
+        int k = i / 65536;
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j, (float) k);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        renderEntity(entityIn, d0 - renderPosX, d1 - renderPosY, d2 - renderPosZ, f, partialTicks, p_188388_3_);
+    }
+
     public static void drawFadingOutline(AxisAlignedBB bb, Color startColor, Color endColor, float linewidth, double height) {
         float red = (float) startColor.getRed() / 255.0f;
         float green = (float) startColor.getGreen() / 255.0f;
@@ -521,6 +599,7 @@ public class RenderUtil
         GlStateManager.disableBlend();
         GlStateManager.popMatrix();
     }
+
     public static void drawBox(BlockPos pos, Color color, double height, boolean fade, boolean invertFade, int alpha) {
         if (fade) {
             Color endColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
@@ -547,7 +626,8 @@ public class RenderUtil
             GlStateManager.popMatrix();
         }
     }
-    public static void drawBlockWireframe(BlockPos pos, Color color, float lineWidth, double height, boolean onlyBottom) {
+
+    public static void drawBlockWireframe(BlockPos pos, Color color, float lineWidth, boolean onlyBottom) {
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
         GlStateManager.disableDepth();
@@ -564,7 +644,7 @@ public class RenderUtil
         int green = color.getGreen();
         int blue = color.getBlue();
         int alpha = color.getAlpha();
-        AxisAlignedBB bb = new AxisAlignedBB(x, y, z, x + 1.0, y + 1.0 + height, z + 1.0);
+        AxisAlignedBB bb = new AxisAlignedBB(x, y, z, x + 1.0, y + 1.0, z + 1.0);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(1, DefaultVertexFormats.POSITION_COLOR);
@@ -693,6 +773,7 @@ public class RenderUtil
             drawBlockFluctuate(iblockstate.getSelectedBoundingBox((World) RenderUtil.mc.world, pos).grow(0.0020000000949949026).offset(-interp.x, -interp.y, -interp.z), color, linewidth);
         }
     }
+
     public static void drawBlockFluctuate(final AxisAlignedBB bb, final Color color, final float linewidth) {
         final float red = color.getRed() / 255.0f;
         final float green = color.getGreen() / 255.0f;
@@ -721,6 +802,64 @@ public class RenderUtil
         GlStateManager.disableBlend();
         GlStateManager.popMatrix();
     }
+
+    public static void renderEntity(Entity entityIn, double x, double y, double z, float yaw, float partialTicks, boolean p_188391_10_) {
+        Render<Entity> render = null;
+
+        try {
+            render = getEntityRenderObject(entityIn);
+
+            if (render != null && renderEngine != null) {
+                try {
+                    render.setRenderOutlines(renderOutlines);
+                    render.doRender(entityIn, x, y, z, yaw, partialTicks);
+                } catch (Throwable throwable1) {
+                    throw new ReportedException(CrashReport.makeCrashReport(throwable1, "Rendering entity in world"));
+                }
+
+                try {
+                    if (!renderOutlines) {
+                        render.doRenderShadowAndFire(entityIn, x, y, z, yaw, partialTicks);
+                    }
+                } catch (Throwable throwable2) {
+                    throw new ReportedException(CrashReport.makeCrashReport(throwable2, "Post-rendering entity in world"));
+                }
+
+                if (debugBoundingBox && !entityIn.isInvisible() && !p_188391_10_ && !Minecraft.getMinecraft().isReducedDebug()) {
+                    try {
+                        renderDebugBoundingBox(entityIn, x, y, z, yaw, partialTicks);
+                    } catch (Throwable throwable) {
+                        throw new ReportedException(CrashReport.makeCrashReport(throwable, "Rendering entity hitbox in world"));
+                    }
+                }
+            }
+        } catch (ReportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Nullable
+    public static <T extends Entity> Render<T> getEntityRenderObject(Entity entityIn) {
+        if (entityIn instanceof AbstractClientPlayer) {
+            String s = ((AbstractClientPlayer) entityIn).getSkinType();
+            RenderPlayer renderplayer = skinMap.get(s);
+            return (Render<T>) (renderplayer != null ? renderplayer : playerRenderer);
+        } else {
+            return getEntityClassRenderObject(entityIn.getClass());
+        }
+    }
+
+    public static <T extends Entity> Render<T> getEntityClassRenderObject(Class<? extends Entity> entityClass) {
+        Render<T> render = (Render) entityRenderMap.get(entityClass);
+
+        if (render == null && entityClass != Entity.class) {
+            render = getEntityClassRenderObject((Class<? extends Entity>) entityClass.getSuperclass());
+            entityRenderMap.put(entityClass, render);
+        }
+
+        return render;
+    }
+
 
     public static void drawBlockOutline(AxisAlignedBB bb, Color color, float linewidth) {
         float red = (float) color.getRed() / 255.0f;
@@ -1768,4 +1907,3 @@ public class RenderUtil
         }
     }
 }
-

@@ -25,7 +25,7 @@ public class ClickGui
     public Setting<Integer> hoverAlpha = this.register(new Setting<Integer>("Alpha", 180, 0, 255));
     public Setting<Integer> topRed = this.register(new Setting<Integer>("SecondRed", 0, 0, 255));
     public Setting<String> moduleButton = this.register(new Setting("Buttons", ""));
-    public Setting<Boolean> colorSync = this.register(new Setting("ColorSync", false));
+    public Setting<Boolean> colorSync = this.register(new Setting("DontClickYouWillCrash", false));
     public Setting<Integer> backgroundAlpha = this.register(new Setting("BackgroundAlpha", 140, 0, 255));
     public Setting<Integer> topGreen = this.register(new Setting<Integer>("SecondGreen", 0, 0, 255));
     public Setting<Integer> topBlue = this.register(new Setting<Integer>("SecondBlue", 150, 0, 255));

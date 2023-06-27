@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 public class SpeedManager
         extends Feature {
+    private float timer = 1.0f;
     public static final double LAST_JUMP_INFO_DURATION_DEFAULT = 3.0;
     public static boolean didJumpThisTick = false;
     public static boolean isJumping = false;
@@ -88,6 +89,11 @@ public class SpeedManager
         double speedometerMpsdouble = this.turnIntoKpH(this.speedometerCurrentSpeed) / 3.6;
         speedometerMpsdouble = (double) Math.round(10.0 * speedometerMpsdouble) / 10.0;
         return speedometerMpsdouble;
+    }
+    public void setTimer(float timer) {
+        if (timer > 0.0f) {
+            this.timer = timer;
+        }
     }
 }
 

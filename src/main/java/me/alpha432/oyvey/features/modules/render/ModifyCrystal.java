@@ -11,7 +11,7 @@ public class ModifyCrystal extends Module
     public static Setting<Float> scale;
 
     public ModifyCrystal() {
-        super("ModifyCrystal", "modifies crystals", Module.Category.RENDER, true, false, false);
+        super("Modify Crystal", "modifies crystals", Module.Category.RENDER, true, false, false);
         this.register((Setting)ModifyCrystal.spin);
         this.register((Setting)ModifyCrystal.scale);
         this.register((Setting)ModifyCrystal.bounce);

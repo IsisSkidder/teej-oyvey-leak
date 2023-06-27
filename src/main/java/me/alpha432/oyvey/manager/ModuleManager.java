@@ -45,7 +45,9 @@ public class ModuleManager
         this.modules.add(new FakePlayer());
         this.modules.add(new LiquidInteract());
         this.modules.add(new PearlNotify());
+        this.modules.add(new PopChams());
         this.modules.add(new ToolTips());
+        this.modules.add(new Speed());
         this.modules.add(new Tracker());
         this.modules.add(new Burrow());
         this.modules.add(new PopCounter());
@@ -54,6 +56,7 @@ public class ModuleManager
         this.modules.add(new Safety());
         this.modules.add(new Surround());
         this.modules.add(new AutoTrap());
+        this.modules.add(new Gradient());
         this.modules.add(new BetterChat());
         this.modules.add(new ModifyCrystal());
         this.modules.add(new SwingAnimation());

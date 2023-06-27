@@ -7,11 +7,14 @@ import me.alpha432.oyvey.event.events.Render2DEvent;
 import me.alpha432.oyvey.event.events.Render3DEvent;
 import me.alpha432.oyvey.features.Feature;
 import me.alpha432.oyvey.features.command.Command;
+import me.alpha432.oyvey.features.modules.client.Colors;
 import me.alpha432.oyvey.features.modules.client.HUD;
 import me.alpha432.oyvey.features.setting.Bind;
 import me.alpha432.oyvey.features.setting.Setting;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
+
+import java.awt.*;
 
 public class Module
         extends Feature {
@@ -180,6 +183,10 @@ public class Module
 
     public String getFullArrayString() {
         return this.getDisplayName() + ChatFormatting.GRAY + (this.getDisplayInfo() != null ? " [" + ChatFormatting.WHITE + this.getDisplayInfo() + ChatFormatting.GRAY + "]" : "");
+    }
+
+    public static Color globalColor(final int alpha) {
+        return new Color(Colors.daColor.getValue().getRed(), Colors.daColor.getValue().getGreen(), Colors.daColor.getValue().getBlue(), alpha);
     }
 
     public enum Category {

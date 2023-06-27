@@ -18,6 +18,7 @@ public class Colors       extends Module {
     public Setting<Integer> green = this.register(new Setting<Object>("Green", Integer.valueOf(255), Integer.valueOf(0), Integer.valueOf(255), v -> this.rainbow.getValue() == false));
     public Setting<Integer> blue = this.register(new Setting<Object>("Blue", Integer.valueOf(255), Integer.valueOf(0), Integer.valueOf(255), v -> this.rainbow.getValue() == false));
     public Setting<Integer> alpha = this.register(new Setting<Object>("Alpha", Integer.valueOf(255), Integer.valueOf(0), Integer.valueOf(255), v -> this.rainbow.getValue() == false));
+    public static final Setting<Color> daColor = new Setting<Color>("Color", new Color(255, 255, 255, 255));
     public float hue;
     public Map<Integer, Integer> colorHeightMap = new HashMap<Integer, Integer>();
 
@@ -49,5 +50,8 @@ public class Colors       extends Module {
             return Color.getHSBColor(this.hue, (float) this.rainbowSaturation.getValue().intValue() / 255.0f, (float) this.rainbowBrightness.getValue().intValue() / 255.0f);
         }
         return new Color(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.alpha.getValue());
+    }
+    public static int getColor() {
+        return new Color(daColor.getValue().getRed(), daColor.getValue().getGreen(), daColor.getValue().getBlue()).getRGB();
     }
 }

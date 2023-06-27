@@ -4,6 +4,7 @@ import me.alpha432.oyvey.event.events.ClientEvent;
 import me.alpha432.oyvey.features.Feature;
 import net.minecraftforge.common.MinecraftForge;
 
+import java.awt.*;
 import java.util.function.Predicate;
 
 public class Setting<T> {
@@ -89,6 +90,7 @@ public class Setting<T> {
         this.visibility = visibility;
         this.plannedValue = defaultValue;
     }
+
     public Setting<T> hideAlpha() {
         hideAlpha = true;
 
@@ -229,7 +231,7 @@ public class Setting<T> {
     }
 
     public boolean isEnumSetting() {
-        return !this.isNumberSetting() && !(this.value instanceof String) && !(this.value instanceof Bind) && !(this.value instanceof Character) && !(this.value instanceof Boolean);
+        return !this.isNumberSetting() && !(this.value instanceof String) && !(this.value instanceof Bind) && !(this.value instanceof Character) && !(this.value instanceof Boolean) && !(this.value instanceof Color);
     }
 
     public boolean isStringSetting() {
@@ -258,8 +260,13 @@ public class Setting<T> {
         }
         return this.visibility.test(this.getValue());
     }
+
     public boolean isOpen() {
         return (open && parent);
+    }
+    public Setting<T> setParent() {
+        this.parent = true;
+        return this;
     }
 }
 
