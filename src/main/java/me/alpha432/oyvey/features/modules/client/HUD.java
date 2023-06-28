@@ -196,7 +196,7 @@ public class HUD extends Module {
                 counter1[0] = counter1[0] + 1;
             }
             if (this.tps.getValue().booleanValue()) {
-                String str = grayString + "TPS " + ChatFormatting.GRAY + OyVey.serverManager.getTPS();
+                String str = grayString + "TPS " + ChatFormatting.WHITE + OyVey.serverManager.getTPS();
                 i += 10;
                 this.renderer.drawString(str, (width - this.renderer.getStringWidth(str) - 2), (height - 2 - i), (ClickGui.getInstance()).rainbow.getValue().booleanValue() ? (((ClickGui.getInstance()).rainbowModeA.getValue() == ClickGui.rainbowModeArray.Up) ? ColorUtil.rainbow(counter1[0] * (ClickGui.getInstance()).rainbowHue.getValue().intValue()).getRGB() : ColorUtil.rainbow((ClickGui.getInstance()).rainbowHue.getValue().intValue()).getRGB()) : this.color, true);
                 counter1[0] = counter1[0] + 1;
@@ -230,7 +230,7 @@ public class HUD extends Module {
             if (this.potions.getValue().booleanValue()) {
                 List<PotionEffect> effects = new ArrayList<>((Minecraft.getMinecraft()).player.getActivePotionEffects());
                 for (PotionEffect potionEffect : effects) {
-                    String str = OyVey.potionManager.getColoredPotionString(potionEffect);
+                    String str = ChatFormatting.WHITE + OyVey.potionManager.getColoredPotionString(potionEffect);
                     if (ClickGui.getInstance().rainbow.getValue()) {
                         this.renderer.drawString(str, (width - this.renderer.getStringWidth(str) - 2), (2 + i++ * 10), (ClickGui.getInstance()).rainbow.getValue().booleanValue() ? (((ClickGui.getInstance()).rainbowModeA.getValue() == ClickGui.rainbowModeArray.Up) ? ColorUtil.rainbow(counter1[0] * (ClickGui.getInstance()).rainbowHue.getValue().intValue()).getRGB() : ColorUtil.rainbow((ClickGui.getInstance()).rainbowHue.getValue().intValue()).getRGB()) : this.color, true);
                     } else {

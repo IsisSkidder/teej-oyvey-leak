@@ -17,7 +17,7 @@ public class HoleESP
     private final Setting<Boolean> renderOwn = register(new Setting<Boolean>("RenderOwn", true));
     private final Setting<Boolean> fov = register(new Setting<Boolean>("FovOnly", false));
     private final Setting<Integer> range = register(new Setting<Integer>("Range", 5, 0, 25));
-    private final Setting<Boolean> box = register(new Setting<Boolean>("Box", false));
+    private final Setting<Boolean> box = register(new Setting<Boolean>("Box", true));
     private final Setting<Boolean> gradientBox = register(new Setting<Boolean>("FadeBox", false));
     private final Setting<Boolean> invertGradientBox = register(new Setting<Boolean>("InvertBoxFade", false));
     private final Setting<Boolean> outline = register(new Setting<Boolean>("Outline", true));
@@ -27,7 +27,7 @@ public class HoleESP
     private final Setting<Double> lineHeight = register(new Setting<Double>("LineHeight", -1.0, -2.0, 2.0));
     private final Setting<Boolean> wireframe = register(new Setting<Boolean>("Wireframe", true));
     private final Setting<WireframeMode> wireframeMode = register(new Setting<WireframeMode>("Mode", WireframeMode.FLAT));
-    private final Setting<Double> height = register(new Setting<Double>("Height", 0.0, -2.0, 5.0));
+    private final Setting<Double> height = register(new Setting<Double>("Height", -1.0, -2.0, 5.0));
     private final Setting<Integer> boxAlpha = register(new Setting<Integer>("BoxAlpha", 120, 0, 255));
     private final Setting<Float> lineWidth = register(new Setting<Float>("LineWidth", Float.valueOf(1.0f), Float.valueOf(0.1f), Float.valueOf(5.0f), v -> (this.outline.getValue() != false || this.wireframe.getValue() != false)));
     private final Setting<Boolean> rainbow = register(new Setting<Boolean>("Rainbow", false));
