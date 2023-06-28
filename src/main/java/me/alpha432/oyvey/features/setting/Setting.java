@@ -268,5 +268,13 @@ public class Setting<T> {
         this.parent = true;
         return this;
     }
+    public Setting<T> injectBoolean(boolean valueIn) {
+        if (this.value instanceof Color) {
+            this.hasBoolean = true;
+            this.booleanValue = valueIn;
+        }
+        return this;
+    }
+
 }
 

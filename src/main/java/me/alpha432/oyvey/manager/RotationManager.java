@@ -6,6 +6,7 @@ import me.alpha432.oyvey.util.MathUtil;
 import me.alpha432.oyvey.util.RotationUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class RotationManager
@@ -53,6 +54,9 @@ public class RotationManager
     public void lookAtEntity(Entity entity) {
         float[] angle = MathUtil.calcAngle(RotationManager.mc.player.getPositionEyes(mc.getRenderPartialTicks()), entity.getPositionEyes(mc.getRenderPartialTicks()));
         this.setPlayerRotations(angle[0], angle[1]);
+    }
+    public static int getYaw4D() {
+       return MathHelper.floor((double) ((double) (RotationManager.mc.player.rotationYaw * 4.0f / 360.0f) + 0.5)) & 3;
     }
     public static boolean isInFov(BlockPos pos) {
         int yaw = pos.getY();

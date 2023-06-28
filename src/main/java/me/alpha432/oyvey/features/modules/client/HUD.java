@@ -7,14 +7,18 @@ import me.alpha432.oyvey.event.events.Render2DEvent;
 import me.alpha432.oyvey.features.gui.OyVeyGui;
 import me.alpha432.oyvey.features.modules.Module;
 import me.alpha432.oyvey.features.setting.Setting;
+import me.alpha432.oyvey.manager.RotationManager;
 import me.alpha432.oyvey.util.Timer;
 import me.alpha432.oyvey.util.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Rotation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.Display;
@@ -278,11 +282,17 @@ public class HUD extends Module {
         float nether = !inHell ? 0.125F : 8.0F;
         int hposX = (int) (mc.player.posX * nether);
         int hposZ = (int) (mc.player.posZ * nether);
+        int yawPitch = (int) MathHelper.wrapDegrees((float)HUD.mc.player.rotationYaw);
         i = (mc.currentScreen instanceof net.minecraft.client.gui.GuiChat) ? 14 : 0;
         String coordinates = ChatFormatting.RESET + "XYZ " + ChatFormatting.WHITE + (inHell ? (posX + ", " + posY + ", " + posZ + ChatFormatting.WHITE + " [" + ChatFormatting.WHITE + hposX + ", " + hposZ + ChatFormatting.WHITE + "]" + ChatFormatting.WHITE) : (posX + ", " + posY + ", " + posZ + ChatFormatting.WHITE + " [" + ChatFormatting.WHITE + hposX + ", " + hposZ + ChatFormatting.WHITE + "]"));
         String direction = this.direction.getValue().booleanValue() ? OyVey.rotationManager.getDirection4D(false) : "";
+        String yaw = this.direction.getValue() != false ? (false ? "Yaw: ".toLowerCase() : "Yaw: ") + (Object)ChatFormatting.WHITE + yawPitch : "";
         String coords = this.coords.getValue().booleanValue() ? coordinates : "";
         i += 10;
+        if (HUD.mc.currentScreen instanceof GuiChat && this.direction.getValue().booleanValue()) {
+            yaw = "";
+            direction = (false ? "Yaw: ".toLowerCase() : "Yaw: ") + (Object)ChatFormatting.WHITE + yawPitch + (Object)ChatFormatting.RESET + " " + this.getFacingDirectionShort();
+        }
         if ((ClickGui.getInstance()).rainbow.getValue().booleanValue()) {
             String rainbowCoords = this.coords.getValue().booleanValue() ? ("XYZ " + (inHell ? (posX + ", " + posY + ", " + posZ + " [" + hposX + ", " + hposZ + "]") : (posX + ", " + posY + ", " + posZ + " [" + hposX + ", " + hposZ + "]"))) : "";
             if ((ClickGui.getInstance()).rainbowModeHud.getValue() == ClickGui.rainbowMode.Static) {
@@ -308,6 +318,7 @@ public class HUD extends Module {
             }
         } else {
             this.renderer.drawString(direction, 2.0F, (height - i - 11), this.color, true);
+            this.renderer.drawString(yaw, 2.0F, (height - i - 22), this.color, true);
             this.renderer.drawString(coords, 2.0F, (height - i), this.color, true);
         }
         if (this.armor.getValue().booleanValue())
@@ -454,6 +465,22 @@ public class HUD extends Module {
             }
         }
     }
+        private String getFacingDirectionShort() {
+            int dirnumber = RotationManager.getYaw4D();
+            if (dirnumber == 0) {
+                return "(+Z)";
+            }
+            if (dirnumber == 1) {
+                return "(-X)";
+            }
+            if (dirnumber == 2) {
+                return "(-Z)";
+            }
+            if (dirnumber == 3) {
+                return "(+X)";
+            }
+            return "Loading...";
+        }
     @SubscribeEvent
     public void onSettingChange(ClientEvent event) {
         if (event.getStage() == 2 &&

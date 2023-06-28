@@ -46,6 +46,7 @@ public class ModuleManager
         this.modules.add(new LiquidInteract());
         this.modules.add(new PearlNotify());
         this.modules.add(new PopChams());
+        this.modules.add(new VoidESP());
         this.modules.add(new ToolTips());
         this.modules.add(new Speed());
         this.modules.add(new Tracker());

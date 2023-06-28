@@ -34,6 +34,9 @@ public class TextManager
     public void drawStringWithShadow(String text, float x, float y, int color) {
         this.drawString(text, x, y, color, true);
     }
+    public static String normalizeCases(Object o) {
+        return Character.toUpperCase(o.toString().charAt(0)) + o.toString().toLowerCase().substring(1);
+    }
 
     public void drawString(String text, float x, float y, int color, boolean shadow) {
         if (OyVey.moduleManager.isModuleEnabled(FontMod.getInstance().getName())) {

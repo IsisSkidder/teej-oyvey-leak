@@ -250,6 +250,9 @@ public class RenderUtil
         return new Color(r, g, b).hashCode();
     }
 
+    public static void drawNameTagOutline(int i, int i1, float v, float v1, float v2, int rgb, int rgb1, Boolean value) {
+    }
+
     void drawGradientRect(float left, float top, float right, float bottom, int startColor, int endColor, boolean hovered) {
         if (hovered) {
             startColor = gradientColor(startColor, -20);

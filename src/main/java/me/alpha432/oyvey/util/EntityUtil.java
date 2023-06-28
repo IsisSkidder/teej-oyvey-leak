@@ -1,5 +1,6 @@
 package me.alpha432.oyvey.util;
 
+import com.mojang.authlib.GameProfile;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.alpha432.oyvey.OyVey;
 import net.minecraft.block.*;
@@ -34,6 +35,7 @@ import net.minecraft.util.MovementInput;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import java.awt.*;
 import java.math.RoundingMode;
@@ -43,6 +45,7 @@ import java.util.*;
 
 public class EntityUtil
         implements Util {
+    public static final EntityPlayer player = null;
     public static final Vec3d[] antiDropOffsetList = new Vec3d[]{new Vec3d(0.0, -2.0, 0.0)};
     public static final Vec3d[] platformOffsetList = new Vec3d[]{new Vec3d(0.0, -1.0, 0.0), new Vec3d(0.0, -1.0, -1.0), new Vec3d(0.0, -1.0, 1.0), new Vec3d(-1.0, -1.0, 0.0), new Vec3d(1.0, -1.0, 0.0)};
     public static final Vec3d[] legOffsetList = new Vec3d[]{new Vec3d(-1.0, 0.0, 0.0), new Vec3d(1.0, 0.0, 0.0), new Vec3d(0.0, 0.0, -1.0), new Vec3d(0.0, 0.0, 1.0)};
@@ -145,6 +148,33 @@ public class EntityUtil
     public static boolean isProjectile(Entity entity) {
         return entity instanceof EntityShulkerBullet || entity instanceof EntityFireball;
     }
+    public static EntityPlayer getCopiedPlayer(EntityPlayer player) {
+        final int count = player.getItemInUseCount();
+        EntityPlayer copied = new EntityPlayer((World) EntityUtil.mc.world, new GameProfile(UUID.randomUUID(), player.getName())) {
+
+            public boolean isSpectator() {
+                return false;
+            }
+
+            public boolean isCreative() {
+                return false;
+            }
+
+            public int getItemInUseCount() {
+                return count;
+            }
+        };
+        copied.setSneaking(player.isSneaking());
+        copied.swingProgress = player.swingProgress;
+        copied.limbSwing = player.limbSwing;
+        copied.limbSwingAmount = player.prevLimbSwingAmount;
+        copied.inventory.copyInventory(player.inventory);
+        copied.setPrimaryHand(player.getPrimaryHand());
+        copied.ticksExisted = player.ticksExisted;
+        copied.setEntityId(player.getEntityId());
+        copied.copyLocationAndAnglesFrom((Entity) player);
+        return copied;
+    }
 
     public static boolean isVehicle(Entity entity) {
         return entity instanceof EntityBoat || entity instanceof EntityMinecart;
@@ -207,6 +237,9 @@ public class EntityUtil
             return false;
         }
         return true;
+    }
+    public static EntityPlayer getPlayer() {
+        return player;
     }
 
     public static Vec3d[] getUnsafeBlockArray(Entity entity, int height, boolean floor) {
